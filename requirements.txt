@@ -5,3 +5,19 @@ matplotlib>=3.7
 requests>=2.31
 pytest>=7.4
 kiteconnect>=5.0
+
+# Real NSE/BSE session calendar, so a market holiday is distinguishable from a
+# dropped bar. Used by src/trading_calendar.py and tests/test_calendar.py.
+exchange_calendars>=4.5
+
+# Selection-bias statistics for the 41-pair grid: deflated Sharpe,
+# probabilistic Sharpe, minimum backtest length, effective trial count.
+purgedcv>=0.1.4
+
+# Hansen's SPA / White's Reality Check, for "is the best of N genuinely better
+# than the benchmark". Used by src/overfitting.py.
+arch>=6.0
+
+# Optional: only make_tearsheet.py imports it, and it does so lazily, so the
+# study runs fine without it. Pinned loosely because it is barely maintained.
+quantstats>=0.0.62
