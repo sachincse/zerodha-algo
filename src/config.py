@@ -60,11 +60,20 @@ class CostModel:
         gst = (brok + txn + sebi) * self.gst_rate
         return brok + stt + txn + sebi + stamp + gst
 
-    def sell_cost(self, turnover: float, product: str = "CNC") -> float:
+    def sell_cost(self, turnover: float, product: str = "CNC",
+                  include_dp: bool = True) -> float:
+        """`include_dp=False` prices a single ORDER rather than a sell day.
+
+        The DP charge is levied per scrip per sell day, not per order, so it
+        cannot appear on a per-order contract note. Comparing this model
+        against the broker's own quote requires leaving it out, otherwise the
+        two disagree by exactly Rs 15.34 every time and the comparison proves
+        nothing. Backtesting always wants it, so it stays the default.
+        """
         if product == "CNC":
             brok = self.brokerage_delivery
             stt = turnover * self.stt_delivery_sell
-            dp = self.dp_charge_per_sell
+            dp = self.dp_charge_per_sell if include_dp else 0.0
         else:
             brok = min(turnover * self.brokerage_intraday_pct,
                        self.brokerage_intraday_cap)

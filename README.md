@@ -27,10 +27,15 @@ src/
   backtest.py    event-ordered day loop; fills at next open, never same bar
   metrics.py     CAGR, Sharpe, Sortino, drawdown, trade stats
   orders.py      turns a scan into a reviewable order sheet (never places one)
+  broker_charges.py  prices orders through Kite instead of modelling them
+  trading_calendar.py real NSE/BSE sessions, so a holiday is not a data gap
+  overfitting.py deflated Sharpe, PBO, minimum backtest length, SPA
 tests/
   test_no_leak.py        proves the engine cannot see the future
   test_leak_coverage.py  the four leaks that suite used to miss
   test_mutants.py        injects 8 real leaks; all must be caught
+  test_charges.py        the cost model, against Zerodha's own contract note
+  test_calendar.py       the panel's dates, against the real NSE calendar
 run_scanner.py      today's signals -> out/scan.html + out/scan.csv
 run_backtest.py     the honesty ladder, S0 -> S3
 run_walkforward.py  walk-forward parameter selection + the full grid
@@ -52,6 +57,8 @@ four; none of them are load-bearing for a daily-timeframe scanner.
 
 ```bash
 python run_scanner.py --refresh --lookback 10   # today's ranked signals
+python verify_charges.py                        # cost model vs the broker
+python make_tearsheet.py                        # standard QuantStats report
 python run_backtest.py --end 2026-08-22         # the honesty ladder
 python run_walkforward.py --train-years 3 --end 2026-08-22
 python -m pytest tests/ -v                      # prove there is no leak
@@ -193,3 +200,66 @@ than that noise, but do not expect the fourth digit to match.
 ## Licence
 
 MIT — see [LICENSE](LICENSE).
+
+## Was the winner skill, or the luckiest of 41?
+
+Sweeping 41 parameter pairs and reporting the winner is the textbook way to
+manufacture an edge. The maximum of 41 noisy Sharpe ratios is biased upward
+even when every pair is worthless, and the size of that bias is computable.
+`run_walkforward.py` now reports it (`src/overfitting.py`, artifacts in
+`out/overfitting.json` and `out/grid_returns.csv`):
+
+```
+  trials searched          41          (38 effective — the pairs overlap heavily)
+  best pair                SMA 20/200, Sharpe 0.882
+  deflated Sharpe          0.937       selection-adjusted
+  P(Sharpe > 0)            1.000
+  min backtest length      4.7 years   to trust Sharpe 1.0 after 41 trials
+  P(backtest overfitting)  0.022       below 0.5, so selection is not the problem
+  SPA p-value              0.578       no skill survives the search
+```
+
+Read together these say something sharper than the original claim. The grid
+search is **not** where this fails: PBO of 0.022 means the in-sample winner
+almost never lands in the bottom half out-of-sample, and 15.6 years is well past
+the 4.7 needed for 41 trials. What fails is the whole family. Hansen's SPA
+cannot reject the hypothesis that the best of all 41 pairs has no superiority
+over simply holding the index, at p = 0.58.
+
+Honest tuning still loses. Walk-forward selection returned 11.21% against the
+benchmark's 12.86% on the same out-of-sample window, and the pair that looked
+best in hindsight beat honest selection by 4.62 points a year — which is a
+measurement of how much of a backtest is hindsight.
+
+## Charges are priced, not modelled
+
+`src/config.py` transcribes Zerodha's rates by hand, and the loudest finding
+here — charges took 95% of gross trading gains — rests entirely on that
+transcription. `verify_charges.py` prices the same orders through Kite's
+`/charges/orders` endpoint, which returns the broker's own arithmetic for
+orders that do not exist, and fails if the model disagrees by more than half a
+basis point of turnover.
+
+```bash
+set KITE_API_KEY=...
+set KITE_ACCESS_TOKEN=...
+python verify_charges.py --save
+```
+
+`tests/test_charges.py` runs without credentials too, pinning the properties
+that must hold whatever the statutory rates are this year: GST applies to
+brokerage, exchange and SEBI charges but never to STT; stamp duty is buy-side
+only; delivery costs scale linearly; and the DP charge is per scrip per sell
+day, not per order — which is why comparing against a per-order contract note
+needs `include_dp=False`.
+
+## The calendar, and what it says about the data
+
+`src/trading_calendar.py` uses the real XBOM session calendar instead of
+inferring trading days from whether a bar exists. Auditing the 15-year panel
+against it found the vendor and the exchange disagree on about 24 days out of
+4,103 — and the disagreements are almost all **Diwali Muhurat** sessions, the
+ceremonial one-hour sessions that land on whatever day Diwali falls, including
+Saturdays and Sundays. That is 0.6% of sessions at minimal volume, so it does
+not move any headline number, and it is pinned in `tests/test_calendar.py` so a
+genuinely new data problem cannot hide inside a known one.

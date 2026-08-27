@@ -77,11 +77,18 @@ def main() -> None:
           f"full costs ...", flush=True)
 
     curves: dict[tuple[int, int], pd.Series] = {}
+    # Trade counts are kept because the README's headline observation about
+    # this grid -- corr(CAGR, log trade count) = -0.86 -- is computed from
+    # them. They were previously printed to the console and then dropped, so
+    # the committed param_grid.csv had two columns the code could not
+    # regenerate.
+    trade_counts: dict[tuple[int, int], int] = {}
     for k, (s, l) in enumerate(grid, 1):
         cfg = Settings(costs=CostModel(), execution=ExecModel(slippage_bps=args.slippage_bps),
                        portfolio=pf, short_window=s, long_window=l)
         res = run_backtest(store, mem, cfg, label=f"sma{s}_{l}", start=trade_from)
         curves[(s, l)] = res.equity
+        trade_counts[(s, l)] = len(res.trades)
         print(f"  [{k:2d}/{len(grid)}] SMA {s:>3}/{l:<3}  "
               f"CAGR {cagr(res.equity) * 100:6.2f}%  "
               f"Sharpe {sharpe(res.equity):5.2f}  "
@@ -142,14 +149,34 @@ def main() -> None:
           f"{(cagr(hind_eq) - cagr(oos_eq)) * 100:+.2f}% CAGR of the hindsight-best "
           f"pair's edge does not survive honest selection")
 
+    span_years = (rets.index[-1] - rets.index[0]).days / 365.25
     grid_tbl = pd.DataFrame([
         {"short": s, "long": l,
          "cagr_pct": round(cagr(c) * 100, 2),
          "sharpe": round(sharpe(c), 3),
-         "max_dd_pct": round(max_drawdown(c) * 100, 2)}
+         "max_dd_pct": round(max_drawdown(c) * 100, 2),
+         "trades": trade_counts[(s, l)],
+         "trades_per_yr": trade_counts[(s, l)] / span_years}
         for (s, l), c in curves.items()
     ]).sort_values("sharpe", ascending=False)
     grid_tbl.to_csv(os.path.join(OUT, "param_grid.csv"), index=False)
+
+    # The per-pair return matrix is the evidence behind every overfitting
+    # statistic below. Without it a reader can see WHICH pair won but has no
+    # way to ask whether winning meant anything.
+    rets.to_csv(os.path.join(OUT, "grid_returns.csv"))
+
+    # ---- was the winner skill, or the luckiest of N? ----------------------
+    from src.overfitting import analyse_grid
+
+    bench_rets = b_eq.pct_change().reindex(rets.index)
+    over = analyse_grid(rets, benchmark=bench_rets,
+                        labels={c: f"SMA {c.replace('_', '/')}" for c in rets.columns})
+    print("\n  --- selection bias -------------------------------------------")
+    print(over.render())
+
+    with open(os.path.join(OUT, "overfitting.json"), "w") as f:
+        json.dump({k: v for k, v in vars(over).items()}, f, indent=2, default=str)
 
     pd.DataFrame({"walk_forward": oos_eq, "fixed_6_30": fixed_eq,
                   f"hindsight_{hind}": hind_eq, "nifty100": b_eq}

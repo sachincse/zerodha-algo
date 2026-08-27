@@ -39,6 +39,29 @@ jobs:
       - name: Causality tests
         run: python -m pytest tests/ -q -m "not slow"
 
+      # The overfitting statistics are the one part of the study that depends
+      # on third-party numerics. If purgedcv or arch change an API, the report
+      # silently degrades to "n/a" rather than failing, so this asserts the
+      # numbers are actually computable.
+      - name: Overfitting statistics are computable
+        shell: python
+        run: |
+          import numpy as np, pandas as pd, sys
+          sys.path.insert(0, ".")
+          from src.overfitting import analyse_grid
+          rng = np.random.default_rng(7)
+          idx = pd.bdate_range("2015-01-01", periods=1200)
+          rets = pd.DataFrame(rng.normal(0, 0.01, (1200, 12)), index=idx,
+                              columns=[f"p{i}" for i in range(12)])
+          bench = pd.Series(rng.normal(0.0003, 0.01, 1200), index=idx)
+          r = analyse_grid(rets, benchmark=bench)
+          print(r.render())
+          assert r.pbo is not None, "PBO did not compute"
+          assert r.deflated_sharpe is not None, f"deflated Sharpe missing: {r.notes}"
+          assert r.spa_pvalue is not None, f"SPA missing: {r.notes}"
+          # Pure noise: nothing should look like skill.
+          assert r.spa_pvalue > 0.05, f"SPA found skill in noise (p={r.spa_pvalue})"
+
   mutants:
     name: the tests catch real leaks
     runs-on: ubuntu-latest

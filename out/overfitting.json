@@ -1,0 +1,15 @@
+{
+  "n_trials": 41,
+  "best_label": "SMA 20/200",
+  "best_sharpe": 0.8816384730434609,
+  "deflated_sharpe": 0.9369663182026828,
+  "psr_vs_zero": 0.9996479090288953,
+  "min_backtest_years": 4.705157757615308,
+  "pbo": 0.0225,
+  "spa_pvalue": 0.578,
+  "n_obs": 3862,
+  "span_years": 15.627652292950033,
+  "notes": [
+    "41 pairs were tried but they overlap heavily; deflation uses 38 effective trials"
+  ]
+}
