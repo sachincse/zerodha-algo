@@ -1,0 +1,99 @@
+{
+  "picks": [
+    {
+      "test_year": 2014,
+      "chosen": "10_200",
+      "train_sharpe": 0.935,
+      "test_return_pct": 62.5
+    },
+    {
+      "test_year": 2015,
+      "chosen": "3_200",
+      "train_sharpe": 2.138,
+      "test_return_pct": 5.26
+    },
+    {
+      "test_year": 2016,
+      "chosen": "8_200",
+      "train_sharpe": 1.691,
+      "test_return_pct": -5.53
+    },
+    {
+      "test_year": 2017,
+      "chosen": "20_200",
+      "train_sharpe": 1.42,
+      "test_return_pct": 46.56
+    },
+    {
+      "test_year": 2018,
+      "chosen": "20_200",
+      "train_sharpe": 1.185,
+      "test_return_pct": -1.99
+    },
+    {
+      "test_year": 2019,
+      "chosen": "20_200",
+      "train_sharpe": 0.976,
+      "test_return_pct": 7.87
+    },
+    {
+      "test_year": 2020,
+      "chosen": "10_200",
+      "train_sharpe": 1.1,
+      "test_return_pct": 16.52
+    },
+    {
+      "test_year": 2021,
+      "chosen": "6_200",
+      "train_sharpe": 0.601,
+      "test_return_pct": 9.89
+    },
+    {
+      "test_year": 2022,
+      "chosen": "15_100",
+      "train_sharpe": 1.144,
+      "test_return_pct": 1.03
+    },
+    {
+      "test_year": 2023,
+      "chosen": "6_40",
+      "train_sharpe": 0.954,
+      "test_return_pct": 13.48
+    },
+    {
+      "test_year": 2024,
+      "chosen": "15_200",
+      "train_sharpe": 1.436,
+      "test_return_pct": 11.36
+    },
+    {
+      "test_year": 2025,
+      "chosen": "3_200",
+      "train_sharpe": 1.269,
+      "test_return_pct": -5.87
+    },
+    {
+      "test_year": 2026,
+      "chosen": "3_200",
+      "train_sharpe": 1.351,
+      "test_return_pct": -1.01
+    }
+  ],
+  "walk_forward": {
+    "cagr_pct": 11.207160753322887,
+    "sharpe": 0.3353928674879687,
+    "max_dd_pct": -27.05075190289914
+  },
+  "fixed_6_30": {
+    "cagr_pct": 3.277462828132194,
+    "sharpe": -0.11383497896082205,
+    "max_dd_pct": -42.128473670214476
+  },
+  "hindsight_best": {
+    "pair": "20_200",
+    "cagr_pct": 15.829839786292421
+  },
+  "benchmark": {
+    "cagr_pct": 12.857771056768176
+  }
+}

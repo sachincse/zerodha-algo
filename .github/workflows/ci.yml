@@ -1,0 +1,109 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: tests · py${{ matrix.python }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      # The fixtures are synthetic and deterministic, so nothing here touches
+      # the network or needs the 125 MB price cache.
+      - name: Causality tests
+        run: python -m pytest tests/ -q -m "not slow"
+
+  mutants:
+    name: the tests catch real leaks
+    runs-on: ubuntu-latest
+    # The headline claim of this repo is that the backtest cannot see the
+    # future. A green suite is not evidence of that on its own — four of these
+    # eight mutations once survived it. This job is what makes the claim
+    # falsifiable, so it gates the branch like any other test.
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Inject 8 lookahead bugs; every one must be caught
+        run: python -m pytest tests/test_mutants.py -q
+
+  claims:
+    name: published numbers match the artifacts
+    runs-on: ubuntu-latest
+    # The prose quotes 1.92% / 10.70% / 11.90%. Those live in
+    # out/summaries.json, which is committed. If someone edits one and not the
+    # other, this fails rather than shipping a README that contradicts its own
+    # evidence.
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - name: Cross-check README and REPORT against out/summaries.json
+        shell: python
+        run: |
+          import json, pathlib, re, sys
+
+          s = json.loads(pathlib.Path("out/summaries.json").read_text(encoding="utf-8"))
+          got = {
+              "strategy": s["summaries"]["S3_pit"]["cagr_pct"],
+              "benchmark": s["summaries"]["S3_pit"]["benchmark_cagr_pct"],
+              "no_timing": s["nulls"]["pit_equal_weight"]["cagr_pct"],
+          }
+          want = {"strategy": 1.92, "benchmark": 10.70, "no_timing": 11.90}
+
+          bad = []
+          for k, v in want.items():
+              if round(got[k], 2) != v:
+                  bad.append(f"{k}: prose says {v}, artifact says {got[k]:.4f}")
+
+          text = (pathlib.Path("README.md").read_text(encoding="utf-8")
+                  + pathlib.Path("out/REPORT.md").read_text(encoding="utf-8"))
+          for v in want.values():
+              if f"{v:.2f}" not in text and f"{v:.1f}" not in text:
+                  bad.append(f"{v} appears in neither README.md nor out/REPORT.md")
+
+          print("\n".join(f"  {k}: {v:.4f}" for k, v in got.items()))
+          if bad:
+              print("\nMISMATCH:")
+              print("\n".join(f"  - {b}" for b in bad))
+              sys.exit(1)
+          print("\nheadline numbers agree with the artifacts")

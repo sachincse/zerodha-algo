@@ -1,0 +1,13 @@
+# The 125 MB price cache. Regenerate with fetch_data.py — see the README.
+data/cache/
+
+# Everything in out/ is deliberately COMMITTED. This repo exists to be the
+# evidence behind a published claim, and a reader who cannot open the numbers
+# has to take the prose on trust. out/ is ~2 MB; the cache is what was large.
+
+__pycache__/
+*.pyc
+.pytest_cache/
+install.log
+.env
+.claude/settings.local.json

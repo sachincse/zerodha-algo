@@ -1,0 +1,33 @@
+# This repo is developed on Windows and ships scripts that must run on Linux
+# and macOS. Without this file, whether start.sh lands in the repo with CRLF
+# depends on each contributor's core.autocrlf setting — and a shell script with
+# a CRLF shebang fails on Linux with the memorable
+# "/usr/bin/env: 'bash\r': No such file or directory".
+#
+# It is currently fine. This is here so it stays fine.
+
+* text=auto
+
+# Always LF in the repo AND in the working tree, on every platform.
+*.sh        text eol=lf
+*.py        text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+*.json      text eol=lf
+*.jsx       text eol=lf
+*.js        text eol=lf
+*.css       text eol=lf
+*.html      text eol=lf
+*.md        text eol=lf
+
+# Batch files are the exception: cmd.exe wants CRLF, and a .bat with LF endings
+# can mis-parse multi-line blocks.
+*.bat       text eol=crlf
+*.cmd       text eol=crlf
+
+# Never touch binaries — the tutorial video lives in docs/.
+*.mp4       binary
+*.png       binary
+*.jpg       binary
+*.ico       binary
+*.pdf       binary

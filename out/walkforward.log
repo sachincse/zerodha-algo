@@ -1,0 +1,73 @@
+loading 500 symbols ...
+running 41 parameter pairs, point-in-time universe, full costs ...
+  [ 1/41] SMA   3/20   CAGR   1.64%  Sharpe -0.22  maxDD  -45.3%  trades 2626
+  [ 2/41] SMA   3/30   CAGR   1.31%  Sharpe -0.24  maxDD  -37.6%  trades 2127
+  [ 3/41] SMA   3/40   CAGR   5.43%  Sharpe  0.02  maxDD  -35.3%  trades 1787
+  [ 4/41] SMA   3/50   CAGR   2.05%  Sharpe -0.19  maxDD  -42.9%  trades 1601
+  [ 5/41] SMA   3/100  CAGR   2.86%  Sharpe -0.15  maxDD  -42.1%  trades 1098
+  [ 6/41] SMA   3/200  CAGR  10.82%  Sharpe  0.32  maxDD  -29.2%  trades  725
+  [ 7/41] SMA   5/20   CAGR  -2.45%  Sharpe -0.49  maxDD  -49.1%  trades 2224
+  [ 8/41] SMA   5/30   CAGR   4.22%  Sharpe -0.06  maxDD  -33.9%  trades 1685
+  [ 9/41] SMA   5/40   CAGR   2.44%  Sharpe -0.17  maxDD  -40.8%  trades 1459
+  [10/41] SMA   5/50   CAGR   1.72%  Sharpe -0.21  maxDD  -49.4%  trades 1262
+  [11/41] SMA   5/100  CAGR   4.29%  Sharpe -0.07  maxDD  -31.9%  trades  838
+  [12/41] SMA   5/200  CAGR   7.57%  Sharpe  0.14  maxDD  -32.5%  trades  578
+  [13/41] SMA   6/20   CAGR  -2.22%  Sharpe -0.46  maxDD  -47.1%  trades 2086
+  [14/41] SMA   6/30   CAGR   1.92%  Sharpe -0.20  maxDD  -42.1%  trades 1574
+  [15/41] SMA   6/40   CAGR   5.91%  Sharpe  0.05  maxDD  -37.3%  trades 1318
+  [16/41] SMA   6/50   CAGR   5.08%  Sharpe -0.01  maxDD  -33.4%  trades 1105
+  [17/41] SMA   6/100  CAGR   5.29%  Sharpe  0.00  maxDD  -34.1%  trades  770
+  [18/41] SMA   6/200  CAGR   9.45%  Sharpe  0.25  maxDD  -31.2%  trades  521
+  [19/41] SMA   8/20   CAGR   1.56%  Sharpe -0.22  maxDD  -45.6%  trades 1887
+  [20/41] SMA   8/30   CAGR   1.71%  Sharpe -0.22  maxDD  -39.5%  trades 1428
+  [21/41] SMA   8/40   CAGR   3.24%  Sharpe -0.12  maxDD  -40.6%  trades 1180
+  [22/41] SMA   8/50   CAGR   6.18%  Sharpe  0.05  maxDD  -34.6%  trades  983
+  [23/41] SMA   8/100  CAGR   3.39%  Sharpe -0.12  maxDD  -31.9%  trades  705
+  [24/41] SMA   8/200  CAGR  11.80%  Sharpe  0.38  maxDD  -30.6%  trades  438
+  [25/41] SMA  10/20   CAGR   1.44%  Sharpe -0.23  maxDD  -41.2%  trades 1905
+  [26/41] SMA  10/30   CAGR   5.86%  Sharpe  0.04  maxDD  -33.0%  trades 1329
+  [27/41] SMA  10/40   CAGR   2.67%  Sharpe -0.16  maxDD  -38.4%  trades 1085
+  [28/41] SMA  10/50   CAGR   2.95%  Sharpe -0.14  maxDD  -41.9%  trades  942
+  [29/41] SMA  10/100  CAGR   7.09%  Sharpe  0.11  maxDD  -32.3%  trades  629
+  [30/41] SMA  10/200  CAGR  12.09%  Sharpe  0.39  maxDD  -25.4%  trades  371
+  [31/41] SMA  15/20   CAGR   5.11%  Sharpe -0.00  maxDD  -47.1%  trades 2137
+  [32/41] SMA  15/30   CAGR   4.03%  Sharpe -0.07  maxDD  -41.3%  trades 1255
+  [33/41] SMA  15/40   CAGR   4.83%  Sharpe -0.03  maxDD  -43.3%  trades  983
+  [34/41] SMA  15/50   CAGR   4.60%  Sharpe -0.03  maxDD  -37.7%  trades  819
+  [35/41] SMA  15/100  CAGR   7.78%  Sharpe  0.15  maxDD  -32.8%  trades  524
+  [36/41] SMA  15/200  CAGR  14.23%  Sharpe  0.50  maxDD  -32.1%  trades  286
+  [37/41] SMA  20/30   CAGR   5.19%  Sharpe -0.01  maxDD  -29.8%  trades 1317
+  [38/41] SMA  20/40   CAGR   4.52%  Sharpe -0.05  maxDD  -32.6%  trades  922
+  [39/41] SMA  20/50   CAGR   3.76%  Sharpe -0.09  maxDD  -43.2%  trades  766
+  [40/41] SMA  20/100  CAGR  10.43%  Sharpe  0.30  maxDD  -33.2%  trades  429
+  [41/41] SMA  20/200  CAGR  13.85%  Sharpe  0.49  maxDD  -27.9%  trades  269
+
+==============================================================================
+WALK-FORWARD (3y train -> 1y test), 2014-01-01 -> 2026-08-21
+==============================================================================
+  2014  trained-best SMA 10/200    train Sharpe  0.94  -> realised  +62.50%
+  2015  trained-best SMA 3/200     train Sharpe  2.14  -> realised   +5.26%
+  2016  trained-best SMA 8/200     train Sharpe  1.69  -> realised   -5.53%
+  2017  trained-best SMA 20/200    train Sharpe  1.42  -> realised  +46.56%
+  2018  trained-best SMA 20/200    train Sharpe  1.19  -> realised   -1.99%
+  2019  trained-best SMA 20/200    train Sharpe  0.98  -> realised   +7.87%
+  2020  trained-best SMA 10/200    train Sharpe  1.10  -> realised  +16.52%
+  2021  trained-best SMA 6/200     train Sharpe  0.60  -> realised   +9.89%
+  2022  trained-best SMA 15/100    train Sharpe  1.14  -> realised   +1.03%
+  2023  trained-best SMA 6/40      train Sharpe  0.95  -> realised  +13.48%
+  2024  trained-best SMA 15/200    train Sharpe  1.44  -> realised  +11.36%
+  2025  trained-best SMA 3/200     train Sharpe  1.27  -> realised   -5.87%
+  2026  trained-best SMA 3/200     train Sharpe  1.35  -> realised   -1.01%
+
+==============================================================================
+OUT-OF-SAMPLE COMPARISON (same window for all)
+==============================================================================
+  walk-forward (honest tuning)       CAGR  11.21%   Sharpe  0.34   maxDD  -27.1%
+  fixed SMA 6/30 (the video)         CAGR   3.28%   Sharpe -0.11   maxDD  -42.1%
+  best in hindsight SMA 20/200       CAGR  15.83%   Sharpe  0.58   maxDD  -27.9%
+  NIFTY100_TRI_net (total return)    CAGR  12.86%   Sharpe  0.45   maxDD  -38.0%
+
+  overfitting premium: +4.62% CAGR of the hindsight-best pair's edge does not survive honest selection
+
+  full grid (41 pairs) written to out/param_grid.csv
+  grid CAGR spread: -2.45% .. 14.23%

@@ -1,0 +1,490 @@
+<title>The Varsity Crossover, Tested</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+/* ── palette ─────────────────────────────────────────────────────────────
+   Teal-biased neutrals, iron-oxide for the verdict, deep teal for what
+   actually works, ochre for figures that are inflated by assumption.     */
+:root{
+  --paper:#f2f5f5;   --card:#ffffff;   --sunk:#e8eded;
+  --ink:#101819;     --ink-2:#3c4c4f;  --ink-3:#6d8286;
+  --rule:#d3dcdc;    --rule-2:#c0cccc;
+  --loss:#a8322a;    --loss-soft:#a8322a1f;
+  --gain:#1f6f5c;    --gain-soft:#1f6f5c1a;
+  --claim:#9c6a17;   --claim-soft:#9c6a1717;
+  --shadow:0 1px 2px #10181908, 0 8px 28px #1018190a;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0c1213;   --card:#131b1d;   --sunk:#0f1618;
+    --ink:#e3eaea;     --ink-2:#a8bcbe;  --ink-3:#74898d;
+    --rule:#222e30;    --rule-2:#2e3d40;
+    --loss:#e07a6e;    --loss-soft:#e07a6e1f;
+    --gain:#57bda2;    --gain-soft:#57bda21a;
+    --claim:#d5a44e;   --claim-soft:#d5a44e17;
+    --shadow:0 1px 2px #0006, 0 10px 30px #0004;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0c1213;   --card:#131b1d;   --sunk:#0f1618;
+  --ink:#e3eaea;     --ink-2:#a8bcbe;  --ink-3:#74898d;
+  --rule:#222e30;    --rule-2:#2e3d40;
+  --loss:#e07a6e;    --loss-soft:#e07a6e1f;
+  --gain:#57bda2;    --gain-soft:#57bda21a;
+  --claim:#d5a44e;   --claim-soft:#d5a44e17;
+  --shadow:0 1px 2px #0006, 0 10px 30px #0004;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font:400 16.5px/1.62 "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1120px; margin:0 auto; padding:0 28px 96px}
+.col{max-width:68ch}
+h1,h2,h3{font-family:"Newsreader", Georgia, serif; text-wrap:balance; margin:0}
+p{margin:0}
+a{color:inherit; text-decoration-color:var(--rule-2); text-underline-offset:3px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--gain); outline-offset:3px; border-radius:2px}
+.num{font-family:"IBM Plex Mono", ui-monospace, monospace; font-variant-numeric:tabular-nums}
+
+/* ── masthead ─────────────────────────────────────────────────────────── */
+header{padding:72px 0 0}
+.eyebrow{
+  font:500 11.5px/1 "IBM Plex Mono", monospace; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ink-3);
+}
+h1{font-size:clamp(38px,6vw,66px); line-height:1.02; font-weight:500; margin:20px 0 0; letter-spacing:-.015em}
+h1 em{font-style:italic; color:var(--loss)}
+.standfirst{margin-top:22px; font-size:19px; line-height:1.58; color:var(--ink-2)}
+.byline{
+  margin-top:28px; padding-top:16px; border-top:1px solid var(--rule);
+  font:400 13px/1.5 "IBM Plex Mono", monospace; color:var(--ink-3);
+  display:flex; flex-wrap:wrap; gap:6px 26px;
+}
+
+/* ── the verdict ──────────────────────────────────────────────────────── */
+.verdict{
+  margin:52px 0 0; display:grid; gap:1px; background:var(--rule);
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  border:1px solid var(--rule); border-radius:3px; overflow:hidden;
+}
+.vcell{background:var(--card); padding:26px 24px 24px}
+.vcell .k{font:500 11px/1 "IBM Plex Mono",monospace; letter-spacing:.13em;
+          text-transform:uppercase; color:var(--ink-3)}
+.vcell .v{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums;
+          font-size:41px; font-weight:500; line-height:1.05; margin-top:14px; letter-spacing:-.02em}
+.vcell .n{margin-top:9px; font-size:13.5px; line-height:1.45; color:var(--ink-3)}
+.v-loss{color:var(--loss)} .v-gain{color:var(--gain)}
+
+/* ── structure ────────────────────────────────────────────────────────── */
+section{margin-top:76px}
+h2{font-size:clamp(25px,3.4vw,34px); font-weight:500; letter-spacing:-.01em; line-height:1.15}
+.kicker{
+  font:500 11px/1 "IBM Plex Mono",monospace; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--ink-3); margin-bottom:13px;
+  display:flex; align-items:center; gap:11px;
+}
+.kicker::after{content:""; flex:1; height:1px; background:var(--rule)}
+h2 + p, h3 + p{margin-top:16px}
+p + p{margin-top:15px}
+section > .col > p + h3{margin-top:34px}
+h3{font-size:20px; font-weight:600; margin-top:36px}
+strong{font-weight:600}
+.lede{font-size:18.5px; line-height:1.55; color:var(--ink-2)}
+
+/* ── the ladder ───────────────────────────────────────────────────────── */
+.ladder{
+  margin-top:34px; background:var(--card); border:1px solid var(--rule);
+  border-radius:3px; padding:30px 26px 22px; box-shadow:var(--shadow);
+}
+.bars{display:grid; grid-template-columns:repeat(6,1fr); gap:14px; align-items:end;
+      height:250px; margin-bottom:2px}
+.bar{display:flex; flex-direction:column; justify-content:flex-end; height:100%; gap:8px}
+.bar .fig{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums;
+          font-size:16px; font-weight:600; text-align:center}
+.bar .stem{border-radius:2px 2px 0 0; min-height:2px}
+.b-claim .stem{background:var(--claim); opacity:.42} .b-claim .fig{color:var(--claim)}
+.b-loss  .stem{background:var(--loss)}               .b-loss  .fig{color:var(--loss)}
+.b-gain  .stem{background:var(--gain)}               .b-gain  .fig{color:var(--gain)}
+.b-gain-soft .stem{background:var(--gain); opacity:.5} .b-gain-soft .fig{color:var(--gain)}
+.blabels{display:grid; grid-template-columns:repeat(6,1fr); gap:14px;
+         border-top:1px solid var(--rule-2); padding-top:11px}
+.blabels div{font-size:12.5px; line-height:1.35; color:var(--ink-2); text-align:center}
+.blabels .step{display:block; font:600 10.5px/1 "IBM Plex Mono",monospace;
+               letter-spacing:.1em; color:var(--ink-3); margin-bottom:5px}
+
+/* ── charts ───────────────────────────────────────────────────────────── */
+.figure{margin-top:34px; background:var(--card); border:1px solid var(--rule);
+        border-radius:3px; padding:22px 20px 16px; box-shadow:var(--shadow)}
+.chart{display:block; width:100%; height:330px}
+.chart-dd{height:118px; margin-top:6px}
+.ln{fill:none; stroke-width:1.15; vector-effect:non-scaling-stroke; opacity:.5}
+.ln-emph{stroke-width:2; opacity:1}
+.ln-s0{stroke:var(--claim)} .ln-s2{stroke:var(--ink-3)}
+.ln-null{stroke:var(--claim)} .ln-bench{stroke:var(--gain)} .ln-s3{stroke:var(--loss)}
+.gl{stroke:var(--rule); stroke-width:1; vector-effect:non-scaling-stroke}
+.tk{fill:var(--ink-3); font:400 11px "IBM Plex Mono",monospace}
+.dd-fill{fill:var(--loss); opacity:.4}
+.dd-bench{fill:none; stroke:var(--gain); stroke-width:1.4; vector-effect:non-scaling-stroke}
+.legend{display:flex; flex-wrap:wrap; gap:8px 22px; margin-top:12px; padding-top:12px;
+        border-top:1px solid var(--rule); font-size:12.5px; color:var(--ink-2)}
+.legend span{display:flex; align-items:center; gap:7px}
+.swatch{width:15px; height:2.5px; border-radius:2px; flex:none}
+.cap{margin-top:12px; font-size:13px; line-height:1.5; color:var(--ink-3)}
+
+/* ── tables ───────────────────────────────────────────────────────────── */
+.tw{margin-top:28px; overflow-x:auto; border:1px solid var(--rule);
+    border-radius:3px; background:var(--card)}
+table{border-collapse:collapse; width:100%; min-width:520px; font-size:14.5px}
+th{
+  text-align:left; padding:12px 16px; border-bottom:1px solid var(--rule-2);
+  font:500 10.5px/1.3 "IBM Plex Mono",monospace; letter-spacing:.11em;
+  text-transform:uppercase; color:var(--ink-3); white-space:nowrap;
+}
+td{padding:11px 16px; border-bottom:1px solid var(--rule); vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+td.n,th.n{text-align:right; font-family:"IBM Plex Mono",monospace;
+          font-variant-numeric:tabular-nums; white-space:nowrap}
+tr.hl td{background:var(--loss-soft); font-weight:600}
+tr.ok td{background:var(--gain-soft)}
+.pos{color:var(--gain)} .neg{color:var(--loss)} .mid{color:var(--claim)}
+caption{caption-side:bottom; padding:12px 16px; text-align:left;
+        font-size:12.5px; line-height:1.5; color:var(--ink-3)}
+
+/* ── callout ──────────────────────────────────────────────────────────── */
+.callout{
+  margin-top:30px; padding:22px 24px; border-radius:3px;
+  background:var(--loss-soft); border:1px solid var(--loss);
+}
+.callout.neutral{background:var(--sunk); border-color:var(--rule-2)}
+.callout .h{font:600 11px/1 "IBM Plex Mono",monospace; letter-spacing:.13em;
+            text-transform:uppercase; color:var(--loss); margin-bottom:11px}
+.callout.neutral .h{color:var(--ink-3)}
+.callout p{font-size:15.5px}
+
+/* ── lists ────────────────────────────────────────────────────────────── */
+ul{margin:18px 0 0; padding:0; list-style:none; display:flex;
+   flex-direction:column; gap:12px}
+ul li{position:relative; padding-left:20px; color:var(--ink-2)}
+ul li::before{content:""; position:absolute; left:2px; top:.68em; width:6px; height:1.5px;
+              background:var(--rule-2)}
+ul li strong{color:var(--ink)}
+
+/* ── code ─────────────────────────────────────────────────────────────── */
+pre{
+  margin:22px 0 0; padding:18px 20px; background:var(--sunk); overflow-x:auto;
+  border:1px solid var(--rule); border-radius:3px;
+  font:400 13.2px/1.72 "IBM Plex Mono",monospace; color:var(--ink-2);
+}
+pre b{color:var(--ink); font-weight:500}
+pre i{color:var(--ink-3); font-style:normal}
+code{font:400 .91em "IBM Plex Mono",monospace; background:var(--sunk);
+     padding:.12em .38em; border-radius:2px}
+
+/* ── step cards ───────────────────────────────────────────────────────── */
+.steps{margin-top:30px; display:grid; gap:1px; background:var(--rule);
+       border:1px solid var(--rule); border-radius:3px; overflow:hidden}
+.step-c{background:var(--card); padding:22px 24px; display:grid;
+        grid-template-columns:auto 1fr; gap:20px; align-items:start}
+.step-c .idx{font:500 12px/1 "IBM Plex Mono",monospace; color:var(--ink-3);
+             padding-top:4px; letter-spacing:.08em}
+.step-c h4{margin:0 0 7px; font-size:16px; font-weight:600}
+.step-c p{font-size:14.5px; line-height:1.55; color:var(--ink-2)}
+
+footer{margin-top:84px; padding-top:26px; border-top:1px solid var(--rule);
+       font-size:13px; line-height:1.6; color:var(--ink-3)}
+
+@media (max-width:720px){
+  .wrap{padding:0 20px 72px}
+  .bars,.blabels{grid-template-columns:repeat(3,1fr)}
+  .bars{height:190px}
+  .step-c{grid-template-columns:1fr; gap:8px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Backtest · NSE equity · 2011&ndash;2026</div>
+  <h1>The Varsity crossover, <em>tested</em></h1>
+  <p class="standfirst">Zerodha Varsity&rsquo;s <a href="https://www.youtube.com/watch?v=V9Ra8klDzrM">Build a Trading Algo with AI</a> teaches you to build a Nifty&nbsp;100 SMA(6)/SMA(30) crossover scanner without writing code. It builds it well. It never asks whether the signal makes money. Here is that question, answered over fifteen and a half years with fills at the next open, every Zerodha charge, and a universe that does not know the future.</p>
+  <div class="byline">
+    <span>3 Jan 2011 &rarr; 21 Aug 2026 &middot; 15.6 years</span>
+    <span>500-name pool &middot; 100-name point-in-time universe</span>
+    <span>&#8377;10,00,000 &middot; 10 equal slots &middot; long only</span>
+  </div>
+</header>
+
+<div class="verdict">
+  <div class="vcell">
+    <div class="k">The rule, honestly</div>
+    <div class="v v-loss num">1.92%</div>
+    <div class="n">CAGR. Sharpe &minus;0.20, worst drawdown &minus;42%.</div>
+  </div>
+  <div class="vcell">
+    <div class="k">Nifty 100, held</div>
+    <div class="v v-gain num">10.70%</div>
+    <div class="n">Total-return index, net of a 25&nbsp;bps fund fee.</div>
+  </div>
+  <div class="vcell">
+    <div class="k">Cost of following it</div>
+    <div class="v v-loss num">&minus;8.8<span style="font-size:.62em">pts</span></div>
+    <div class="n">Per year, for 1,574 trades and more drawdown.</div>
+  </div>
+</div>
+
+<section>
+  <div class="col">
+    <div class="kicker">The ladder</div>
+    <h2>Every assumption you drop takes a bite</h2>
+    <p class="lede">The same rule, run six ways. Each rung removes one convenient assumption. This is the only reliable way to tell an edge from an artefact &mdash; and it shows the leak everyone warns about is the smallest one here.</p>
+  </div>
+
+  <div class="ladder">
+    <div class="bars">
+      <div class="bar b-claim"><div class="fig num">12.68%</div><div class="stem" style="height:79%"></div></div>
+      <div class="bar b-claim"><div class="fig num">12.47%</div><div class="stem" style="height:78%"></div></div>
+      <div class="bar b-claim"><div class="fig num">5.85%</div><div class="stem" style="height:37%"></div></div>
+      <div class="bar b-loss"><div class="fig num">1.92%</div><div class="stem" style="height:12%"></div></div>
+      <div class="bar b-gain-soft"><div class="fig num">11.90%</div><div class="stem" style="height:75%"></div></div>
+      <div class="bar b-gain"><div class="fig num">10.70%</div><div class="stem" style="height:67%"></div></div>
+    </div>
+    <div class="blabels">
+      <div><span class="step">S0</span>Naive backtest</div>
+      <div><span class="step">S1</span>Fills at next open</div>
+      <div><span class="step">S2</span>+ real charges &amp; slippage</div>
+      <div><span class="step">S3</span>+ point-in-time universe</div>
+      <div><span class="step">Null</span>Same universe, no timing</div>
+      <div><span class="step">Bench</span>Nifty 100 TRI</div>
+    </div>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th></th><th>What changed</th><th class="n">CAGR</th><th class="n">Sharpe</th><th class="n">Max DD</th><th class="n">Delta</th></tr></thead>
+      <tbody>
+        <tr><td class="num">S0</td><td>Nothing. Filled at the signal bar&rsquo;s close, zero costs, today&rsquo;s index members.</td><td class="n mid">12.68%</td><td class="n">0.45</td><td class="n">&minus;28.1%</td><td class="n">&mdash;</td></tr>
+        <tr><td class="num">S1</td><td>Fills moved to the next session&rsquo;s open.</td><td class="n mid">12.47%</td><td class="n">0.44</td><td class="n">&minus;26.9%</td><td class="n">&minus;0.21</td></tr>
+        <tr><td class="num">S2</td><td>Zerodha charges, STT, stamp, GST, DP, 25&nbsp;bps slippage.</td><td class="n">5.85%</td><td class="n">0.03</td><td class="n">&minus;32.3%</td><td class="n neg">&minus;6.62</td></tr>
+        <tr class="hl"><td class="num">S3</td><td>Point-in-time universe instead of today&rsquo;s index members.</td><td class="n">1.92%</td><td class="n">&minus;0.20</td><td class="n">&minus;42.1%</td><td class="n neg">&minus;3.94</td></tr>
+        <tr class="ok"><td>&mdash;</td><td><strong>Same universe, no timing rule at all</strong></td><td class="n pos">11.90%</td><td class="n">0.35</td><td class="n">&minus;46.8%</td><td class="n">&mdash;</td></tr>
+        <tr class="ok"><td>&mdash;</td><td><strong>Nifty 100 total-return index, net of fees</strong></td><td class="n pos">10.70%</td><td class="n">0.32</td><td class="n">&minus;38.0%</td><td class="n">&mdash;</td></tr>
+      </tbody>
+      <caption>Costs took 6.6 points a year. Survivorship bias took another 3.9. Fill timing &mdash; the classic look-ahead leak &mdash; was worth 0.2, because a 6/30 crossover is slow enough that one session barely matters. The famous leak is the smallest; the two that actually matter are the ones nobody mentions.</caption>
+    </table>
+  </div>
+
+  <div class="figure">
+    <!--EQUITY_SVG-->
+    <div class="legend">
+      <span><i class="swatch" style="background:var(--claim);opacity:.5"></i>S0 naive</span>
+      <span><i class="swatch" style="background:var(--ink-3);opacity:.5"></i>S2 costed</span>
+      <span><i class="swatch" style="background:var(--claim)"></i>Same universe, no timing</span>
+      <span><i class="swatch" style="background:var(--gain)"></i>Nifty 100 TRI</span>
+      <span><i class="swatch" style="background:var(--loss)"></i>S3 honest</span>
+    </div>
+    <!--DD_SVG-->
+    <p class="cap">Below: drawdown. The strategy (filled) is underwater almost continuously for fifteen years &mdash; 1,667 trading days in its longest stretch. The index (line) keeps making new highs. Log scale above; gridlines mark multiples of the starting capital.</p>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <div class="kicker">Diagnosis</div>
+    <h2>The universe was fine. The rule was the problem.</h2>
+    <p>Buying the <em>same</em> hundred stocks the strategy was choosing from &mdash; equal-weighted, rebalanced monthly, no timing whatsoever, paying exactly the same charges &mdash; returned <strong>11.90% a year</strong>. That beats the index. So the stock pool was not the issue.</p>
+    <p>Bolting the crossover rule on top of that pool took it from 11.90% down to 1.92%. <strong>The timing rule destroyed ten points a year</strong> relative to simply holding what it was already looking at.</p>
+  </div>
+
+  <div class="callout">
+    <div class="h">The decisive test</div>
+    <p>The right null for a timing rule is not zero and not buy-and-hold. It is <strong>random timing at the same exposure</strong>: keep the strategy&rsquo;s own 1,574 trades and its exact holding-period distribution, but draw the entry dates and the stocks at random from the same universe. Over 1,000 bootstrap runs the strategy averaged <span class="num">+0.284%</span> per trade against the null&rsquo;s <span class="num">+0.461%</span> &mdash; it sits at the <strong>28th percentile</strong>. Throwing darts would have done better.</p>
+  </div>
+
+  <div class="col">
+    <p style="margin-top:26px">A second bootstrap separates the two ways a rule can be wrong. Holding the strategy&rsquo;s own <em>entry days</em> fixed and randomising only <em>which stock</em> it bought, the null still won: <span class="num">+0.425%</span> against the strategy&rsquo;s <span class="num">+0.284%</span>, putting it at the 29th percentile. So it is not that the crossover picks reasonable stocks on bad days, or good days and bad stocks. Neither half carries information.</p>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <div class="kicker">Sensitivity</div>
+    <h2>No assumption rescues it</h2>
+    <p>The result is not an artefact of a pessimistic slippage number. NSE publishes a median impact cost of about 2&nbsp;bps for a &#8377;1&nbsp;lakh Nifty&nbsp;100 order &mdash; but that is measured inside the continuous session, and it only applies to you if your order is provably inside the pre-open call auction. Measured first-minute moves on these names run a median of about 21&nbsp;bps.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Slippage per side</th><th class="n">CAGR</th><th class="n">Sharpe</th><th class="n">Max DD</th><th>Reading</th></tr></thead>
+      <tbody>
+        <tr><td class="num">5 bps</td><td class="n">5.70%</td><td class="n">0.03</td><td class="n">&minus;33.4%</td><td>Only if every order lands in the auction</td></tr>
+        <tr class="hl"><td class="num">25 bps</td><td class="n">1.92%</td><td class="n">&minus;0.20</td><td class="n">&minus;42.1%</td><td>The defensible retail assumption</td></tr>
+        <tr><td class="num">50 bps</td><td class="n">&minus;2.51%</td><td class="n">&minus;0.48</td><td class="n">&minus;54.2%</td><td>A bad-fill year</td></tr>
+      </tbody>
+      <caption>Even at an implausibly generous 5&nbsp;bps the rule still loses to the index by five points a year.</caption>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <div class="kicker">Overfitting</div>
+    <h2>Tuning helps &mdash; but not the way it looks</h2>
+    <p>The 6/30 pair was chosen on camera, out of the air. The moment you try several pairs and keep the best, the number you report is no longer one you could have earned. So: run all 41 pairs, then walk forward &mdash; three years to train, one year to trade, the pair re-chosen each January on training-period Sharpe alone.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>2014&ndash;2026 out of sample</th><th class="n">CAGR</th><th class="n">Sharpe</th><th class="n">Max DD</th></tr></thead>
+      <tbody>
+        <tr><td>Walk-forward tuned, honestly</td><td class="n">11.21%</td><td class="n">0.34</td><td class="n">&minus;27.1%</td></tr>
+        <tr class="hl"><td>Fixed SMA 6/30 &mdash; the video&rsquo;s pair</td><td class="n">3.28%</td><td class="n">&minus;0.11</td><td class="n">&minus;42.1%</td></tr>
+        <tr><td>Best pair chosen with hindsight (20/200)</td><td class="n mid">15.83%</td><td class="n">0.58</td><td class="n">&minus;27.9%</td></tr>
+        <tr class="ok"><td>Nifty 100 TRI, net of fees</td><td class="n pos">12.86%</td><td class="n">0.45</td><td class="n">&minus;38.0%</td></tr>
+      </tbody>
+      <caption>The 4.6-point gap between the hindsight-best pair and the walk-forward result is pure overfitting &mdash; edge that exists only because the parameter was picked after seeing the answer.</caption>
+    </table>
+  </div>
+
+  <div class="col">
+    <p style="margin-top:26px">Honest tuning does lift the rule from 3.3% to 11.2%, and it earns a genuinely shallower drawdown than the index (&minus;27% against &minus;38%). But it still finishes below the index on both return and Sharpe. And look at <em>what</em> it selects: in twelve of thirteen years, the training window chose a long moving average of 100 or 200 days. Never anything close to 30.</p>
+  </div>
+
+  <div class="callout neutral">
+    <div class="h">What the parameter grid is really measuring</div>
+    <p>Across all 41 pairs, the correlation between CAGR and the log of trade count is <strong><span class="num">&minus;0.86</span></strong>. The six best pairs all use a 200-day long average and trade 269&ndash;438 times; the five worst use a 20&ndash;30 day average and trade 1,900&ndash;2,200 times. The surface is not measuring signal quality. It is measuring how successfully each pair avoided trading. The video&rsquo;s 6/30 ranks <strong>33rd of 41</strong>, and only 2 of the 41 beat the index.</p>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <div class="kicker">Method</div>
+    <h2>How the no-leak claim is enforced</h2>
+    <p>&ldquo;No data leakage&rdquo; is a claim, and claims need tests. The engine processes each day in a fixed order &mdash; fill yesterday&rsquo;s queued orders at today&rsquo;s open, credit dividends, mark the book to today&rsquo;s close, and only <em>then</em> read signals and queue tomorrow&rsquo;s orders. A decision made on day <span class="num">t</span> cannot be filled before the open of <span class="num">t+1</span>. Three independent tests try to break that.</p>
+  </div>
+
+  <div class="steps">
+    <div class="step-c">
+      <div class="idx">01</div>
+      <div>
+        <h4>Truncation</h4>
+        <p>Signals computed on <code>data[:t]</code> must equal signals computed on the full sample and then sliced to <code>t</code>. If anything peeked ahead, cutting the input short would change the answer.</p>
+      </div>
+    </div>
+    <div class="step-c">
+      <div class="idx">02</div>
+      <div>
+        <h4>Future scramble</h4>
+        <p>Replace every bar after date <span class="num">T</span> with noise &mdash; prices multiplied by random factors between 0.4 and 2.5 &mdash; and re-run. The equity curve up to <span class="num">T</span> must be bit-identical. This is the strongest of the three because it catches leakage through channels the author never thought about.</p>
+      </div>
+    </div>
+    <div class="step-c">
+      <div class="idx">03</div>
+      <div>
+        <h4>Fill timing</h4>
+        <p>Every entry price must equal the <em>next</em> session&rsquo;s open moved by exactly the slippage assumption, and the crossover that caused it must have fired strictly earlier. No trade may fill on the bar that produced its own signal.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <p style="margin-top:26px">Plus: the point-in-time universe is itself causal under truncation; turning costs off must improve results, or the cost model is not really wired into the P&amp;L; and the fast sparse-crossover index must produce trade-for-trade identical output to a dense scan of every column. Fifteen tests, all passing.</p>
+    <pre><i>$</i> <b>python -m pytest tests/ -v</b>
+15 passed in 9.4s</pre>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <div class="kicker">Costs</div>
+    <h2>What a round trip actually costs</h2>
+    <p>Zerodha charges nothing for delivery brokerage, which is exactly why the real cost is easy to overlook. STT alone is 20&nbsp;bps of a round trip, and it is the largest single line by a wide margin.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Line</th><th>Rate</th><th class="n">On &#8377;1,00,000 buy</th><th class="n">On sell</th></tr></thead>
+      <tbody>
+        <tr><td>Brokerage (delivery)</td><td>Zero</td><td class="n">&#8377;0.00</td><td class="n">&#8377;0.00</td></tr>
+        <tr class="hl"><td>Securities transaction tax</td><td>0.1% both sides</td><td class="n">&#8377;100.00</td><td class="n">&#8377;100.00</td></tr>
+        <tr><td>Stamp duty</td><td>0.015%, buy only</td><td class="n">&#8377;15.00</td><td class="n">&#8377;0.00</td></tr>
+        <tr><td>NSE transaction charge</td><td>0.00307% (incl. IPFT)</td><td class="n">&#8377;3.07</td><td class="n">&#8377;3.07</td></tr>
+        <tr><td>SEBI turnover fee</td><td>&#8377;10 per crore</td><td class="n">&#8377;1.00</td><td class="n">&#8377;1.00</td></tr>
+        <tr><td>GST</td><td>18% on brokerage + txn + SEBI</td><td class="n">&#8377;0.73</td><td class="n">&#8377;0.73</td></tr>
+        <tr><td>DP charge</td><td>&#8377;15.34 per scrip per sell day</td><td class="n">&#8377;0.00</td><td class="n">&#8377;15.34</td></tr>
+        <tr class="hl"><td>Total</td><td>23.8 bps round trip</td><td class="n">&#8377;118.74</td><td class="n">&#8377;119.08</td></tr>
+      </tbody>
+      <caption>The &#8377;15.34 DP charge is already GST-inclusive &mdash; a model that grosses it up again overstates by &#8377;2.76 per sell. Add 25&nbsp;bps of slippage each way and a round trip costs about 74&nbsp;bps. At the strategy&rsquo;s turnover that is roughly 6.6 points of CAGR, and it paid &#8377;3,23,801 in charges on a &#8377;10&nbsp;lakh book.</caption>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <div class="kicker">Setup</div>
+    <h2>Running it on your Zerodha account</h2>
+    <p>The video installs Codex, Python, Node, React, Vite and FastAPI, then pays &#8377;500 a month for a Kite Connect app. For a daily-timeframe scanner none of that is load-bearing. The Kite MCP server is already wired into this project and needs no subscription; end-of-day prices are free.</p>
+    <p>The loop stays <strong>semi-automated</strong>, which is what the video recommends and what the results argue for even harder. Claude produces the table and the order sheet; you decide.</p>
+  </div>
+
+  <pre><i># after the close</i>
+<b>python run_scanner.py</b> --refresh --lookback 10
+
+<i># writes out/scan.html and out/scan.csv, ranked by recency</i>
+<i># then, through the Kite MCP: holdings, cash, live quotes</i>
+<i># then an order sheet you approve row by row</i>
+
+PROPOSED ORDERS  <i>(nothing has been sent)</i>
+
+  <b>SELL      7  MARUTI</b>  @ ~ 13,565.00  = &#8377;  94,955   bearish cross 2026-08-19
+  <b>SELL    300  ITC</b>     @ ~    269.40  = &#8377;  80,820   bearish cross 2026-08-12
+  <b>BUY     358  VEDL</b>    @ ~    279.00  = &#8377;  99,882   bullish cross 2026-08-21
+
+  buy side &#8377;99,882    sell side &#8377;175,775    net &#8377;-75,893
+
+<i>notes:</i>
+  <i>- 31 bearish signals ignored: not held, and equity delivery</i>
+  <i>  cannot be shorted overnight in India</i>
+  <i>- 5 bullish signals skipped: older than 3 bars</i></pre>
+
+  <div class="col">
+    <h3>The bearish half is not a trade</h3>
+    <p>Worth being blunt about, because the video presents bullish and bearish signals symmetrically. A retail account <strong>cannot hold a short equity position overnight in India</strong>. SEBI bans naked short selling and every seller must honour delivery at T+1 settlement; Zerodha rejects a CNC sell without holdings, and an intraday short is force-closed the same session. A bearish crossover is an exit signal for something you already own. Half the scanner&rsquo;s output is not actionable as shown.</p>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <div class="kicker">Caveats</div>
+    <h2>What is still wrong with this backtest</h2>
+    <p>Stated so you can discount the result yourself &mdash; and note that every one of these points the same way, <em>against</em> the strategy.</p>
+    <ul>
+      <li><strong>Residual survivorship bias.</strong> The point-in-time universe is drawn from symbols that are listed <em>today</em>. Companies delisted or merged away over fifteen years are absent, and they were disproportionately the losers. The true number is worse than 1.92%, not better.</li>
+      <li><strong>Free data.</strong> Prices come from Yahoo, not NSE bhavcopy. Re-pulling the same window moved the 15-year CAGR by about 0.3 points, so treat every figure as &plusmn;0.5. The conclusion is seventeen times larger than that band.</li>
+      <li><strong>Fills at the printed open.</strong> NSE&rsquo;s daily open is the pre-open call auction price, and a retail market order is not guaranteed to be inside that auction. The 25&nbsp;bps assumption stands in for that uncertainty.</li>
+      <li><strong>Circuit bands are approximated</strong> by a flat 10% gap test rather than the real per-scrip dynamic band, ASM/GSM surveillance state and series restrictions. Only 2 fills were blocked by it; the real number would be somewhat higher.</li>
+      <li><strong>No taxes.</strong> Short-term capital gains would take a further bite out of a strategy with a 25-day median holding period, and would not touch a buy-and-hold benchmark.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <div class="kicker">Verdict</div>
+    <h2>What to actually do with this</h2>
+    <p>The video is a good tutorial about tooling and a bad tutorial about evidence. Everything it teaches &mdash; wire up the broker API, describe the rule in English, get a ranked table &mdash; works, and works better than it shows, because you do not need the &#8377;500 app or the React front end. The gap is that it stops at the moment a table appears on screen, which is precisely the moment the interesting question starts.</p>
+    <p>Keep the scanner. It is a genuinely useful lens on what is moving. Do not trade its output as a system: on this evidence a 6/30 crossover on the Nifty&nbsp;100 is a mechanism for converting 24&nbsp;bps of charges and 50&nbsp;bps of slippage, 1,574 times, into an eight-point annual shortfall against an index fund you could have bought once.</p>
+    <p>If you want to keep pulling this thread, the useful direction is not a different moving-average pair &mdash; the grid says that surface is measuring turnover, not skill. It is a signal with a real economic reason to work, tested with this same machinery, against these same nulls. The machinery is the part worth keeping.</p>
+  </div>
+</section>
+
+<footer>
+  Backtest run 22 August 2026. 500-symbol pool, 4,114 sessions, daily bars from Yahoo Finance; Nifty&nbsp;100 total-return index from NSE Indices. Charges verified against zerodha.com/charges on 22 August 2026. Code, tests and raw trade logs in <code>codes/zerodha-algo</code>; full numbers in <code>out/REPORT.md</code>. Not investment advice &mdash; it is the opposite of a recommendation.
+</footer>
+
+</div>

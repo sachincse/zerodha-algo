@@ -1,0 +1,488 @@
+<title>Winning Is Not Edge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500;700&family=Libre+Franklin:wght@400;500;600&display=swap">
+
+<style>
+/* ── palette ──────────────────────────────────────────────────────────────
+   Slate neutrals with a violet bias; antique brass for the headline numbers
+   the contest sells, crimson for what happened afterwards, steel for the
+   sober reference points.                                                  */
+:root{
+  --paper:#f3f3f7;  --card:#ffffff;  --sunk:#e9e9f0;
+  --ink:#15151d;    --ink-2:#454558; --ink-3:#75758c;
+  --rule:#dadae4;   --rule-2:#c5c5d3;
+  --brass:#8a6a28;  --brass-soft:#8a6a281a;
+  --crim:#a32e42;   --crim-soft:#a32e421a;
+  --steel:#33587f;  --steel-soft:#33587f14;
+  --shadow:0 1px 2px #15151d0a, 0 10px 30px #15151d08;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0e0e14;  --card:#171720;  --sunk:#12121a;
+    --ink:#e8e8f0;    --ink-2:#b0b0c4; --ink-3:#7c7c95;
+    --rule:#282833;   --rule-2:#373746;
+    --brass:#d9b264;  --brass-soft:#d9b2641a;
+    --crim:#ec7d90;   --crim-soft:#ec7d901a;
+    --steel:#7ba3d0;  --steel-soft:#7ba3d014;
+    --shadow:0 1px 2px #0007, 0 12px 34px #0005;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0e0e14;  --card:#171720;  --sunk:#12121a;
+  --ink:#e8e8f0;    --ink-2:#b0b0c4; --ink-3:#7c7c95;
+  --rule:#282833;   --rule-2:#373746;
+  --brass:#d9b264;  --brass-soft:#d9b2641a;
+  --crim:#ec7d90;   --crim-soft:#ec7d901a;
+  --steel:#7ba3d0;  --steel-soft:#7ba3d014;
+  --shadow:0 1px 2px #0007, 0 12px 34px #0005;
+}
+
+*{box-sizing:border-box}
+body{margin:0; background:var(--paper); color:var(--ink);
+     font:400 16.5px/1.65 "Libre Franklin", ui-sans-serif, system-ui, sans-serif;
+     -webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px; margin:0 auto; padding:0 28px 100px}
+.col{max-width:67ch}
+h1,h2,h3,h4{font-family:"Fraunces", Georgia, serif; margin:0; text-wrap:balance}
+p{margin:0}
+a{color:inherit; text-decoration-color:var(--rule-2); text-underline-offset:3px}
+a:focus-visible{outline:2px solid var(--steel); outline-offset:3px; border-radius:2px}
+.m{font-family:"JetBrains Mono", ui-monospace, monospace; font-variant-numeric:tabular-nums}
+
+/* masthead */
+header{padding:76px 0 0}
+.eyebrow{font:500 11px/1 "JetBrains Mono",monospace; letter-spacing:.18em;
+         text-transform:uppercase; color:var(--ink-3)}
+h1{font-size:clamp(40px,6.4vw,72px); line-height:1.0; font-weight:500;
+   margin:22px 0 0; letter-spacing:-.02em}
+h1 em{font-style:italic; color:var(--brass)}
+.standfirst{margin-top:24px; font-size:19px; line-height:1.6; color:var(--ink-2)}
+.byline{margin-top:30px; padding-top:16px; border-top:1px solid var(--rule);
+        font:400 12.5px/1.5 "JetBrains Mono",monospace; color:var(--ink-3);
+        display:flex; flex-wrap:wrap; gap:6px 26px}
+
+/* the two numbers */
+.split{margin-top:50px; display:grid; gap:1px; background:var(--rule);
+       grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+       border:1px solid var(--rule); border-radius:3px; overflow:hidden}
+.sc{background:var(--card); padding:28px 26px}
+.sc .k{font:500 10.5px/1 "JetBrains Mono",monospace; letter-spacing:.15em;
+       text-transform:uppercase; color:var(--ink-3)}
+.sc .v{font-family:"JetBrains Mono",monospace; font-variant-numeric:tabular-nums;
+       font-size:44px; font-weight:700; line-height:1.04; margin-top:15px;
+       letter-spacing:-.03em}
+.sc .n{margin-top:11px; font-size:13.5px; line-height:1.5; color:var(--ink-3)}
+.vb{color:var(--brass)} .vc{color:var(--crim)} .vs{color:var(--steel)}
+
+/* sections */
+section{margin-top:80px}
+h2{font-size:clamp(26px,3.6vw,36px); font-weight:500; line-height:1.14;
+   letter-spacing:-.015em}
+.kicker{font:500 10.5px/1 "JetBrains Mono",monospace; letter-spacing:.18em;
+        text-transform:uppercase; color:var(--ink-3); margin-bottom:14px;
+        display:flex; align-items:center; gap:12px}
+.kicker::after{content:""; flex:1; height:1px; background:var(--rule)}
+h2 + p{margin-top:18px}
+p + p{margin-top:16px}
+h3{font-size:20.5px; font-weight:600; margin-top:38px}
+h3 + p{margin-top:14px}
+.lede{font-size:18.5px; line-height:1.58; color:var(--ink-2)}
+
+/* pull quote */
+blockquote{margin:30px 0 0; padding:0 0 0 24px; border-left:2px solid var(--brass);
+           max-width:64ch}
+blockquote p{font-family:"Fraunces",Georgia,serif; font-size:19.5px; line-height:1.5;
+             font-style:italic; color:var(--ink)}
+blockquote cite{display:block; margin-top:12px; font:400 13px/1.5 "JetBrains Mono",monospace;
+                font-style:normal; color:var(--ink-3)}
+
+/* tables */
+.tw{margin-top:30px; overflow-x:auto; border:1px solid var(--rule);
+    border-radius:3px; background:var(--card); box-shadow:var(--shadow)}
+table{border-collapse:collapse; width:100%; min-width:540px; font-size:14.5px}
+th{text-align:left; padding:13px 16px; border-bottom:1px solid var(--rule-2);
+   font:500 10px/1.3 "JetBrains Mono",monospace; letter-spacing:.13em;
+   text-transform:uppercase; color:var(--ink-3); white-space:nowrap}
+td{padding:12px 16px; border-bottom:1px solid var(--rule); vertical-align:top}
+tbody tr:last-child td{border-bottom:none}
+td.n,th.n{text-align:right; font-family:"JetBrains Mono",monospace;
+          font-variant-numeric:tabular-nums; white-space:nowrap}
+.brass{color:var(--brass); font-weight:500}
+.crim{color:var(--crim); font-weight:500}
+.steel{color:var(--steel); font-weight:500}
+tr.em td{background:var(--crim-soft)}
+tr.gd td{background:var(--steel-soft)}
+caption{caption-side:bottom; padding:13px 16px; text-align:left;
+        font-size:12.5px; line-height:1.55; color:var(--ink-3)}
+
+/* champion ledger */
+.ledger{margin-top:30px; display:grid; gap:1px; background:var(--rule);
+        border:1px solid var(--rule); border-radius:3px; overflow:hidden}
+.lrow{background:var(--card); display:grid; grid-template-columns:1.05fr 1fr 1.15fr;
+      gap:0}
+.lcell{padding:20px 22px}
+.lcell + .lcell{border-left:1px solid var(--rule)}
+.lname{font-family:"Fraunces",Georgia,serif; font-size:18px; font-weight:600}
+.lmeta{margin-top:5px; font:400 12px/1.5 "JetBrains Mono",monospace; color:var(--ink-3)}
+.lbig{font-family:"JetBrains Mono",monospace; font-variant-numeric:tabular-nums;
+      font-size:27px; font-weight:700; letter-spacing:-.02em; line-height:1.1}
+.lsub{margin-top:7px; font-size:13px; line-height:1.5; color:var(--ink-3)}
+.lhead{background:var(--sunk); font:500 10px/1 "JetBrains Mono",monospace;
+       letter-spacing:.13em; text-transform:uppercase; color:var(--ink-3);
+       padding:11px 22px}
+
+/* callout */
+.callout{margin-top:32px; padding:24px 26px; border-radius:3px;
+         background:var(--crim-soft); border:1px solid var(--crim)}
+.callout.brassy{background:var(--brass-soft); border-color:var(--brass)}
+.callout.quiet{background:var(--sunk); border-color:var(--rule-2)}
+.callout .h{font:600 10.5px/1 "JetBrains Mono",monospace; letter-spacing:.15em;
+            text-transform:uppercase; color:var(--crim); margin-bottom:12px}
+.callout.brassy .h{color:var(--brass)}
+.callout.quiet .h{color:var(--ink-3)}
+.callout p{font-size:15.5px; line-height:1.6}
+
+/* lists */
+ul{margin:20px 0 0; padding:0; list-style:none; display:flex;
+   flex-direction:column; gap:13px}
+ul li{position:relative; padding-left:22px; color:var(--ink-2)}
+ul li::before{content:""; position:absolute; left:2px; top:.72em; width:7px;
+              height:1.5px; background:var(--rule-2)}
+ul li strong{color:var(--ink); font-weight:600}
+ol{margin:20px 0 0; padding-left:0; list-style:none; counter-reset:c;
+   display:flex; flex-direction:column; gap:14px}
+ol li{position:relative; padding-left:34px; color:var(--ink-2); counter-increment:c}
+ol li::before{content:counter(c); position:absolute; left:0; top:.08em;
+  font:500 12px/1.5 "JetBrains Mono",monospace; color:var(--brass)}
+ol li strong{color:var(--ink); font-weight:600}
+
+code{font:400 .9em "JetBrains Mono",monospace; background:var(--sunk);
+     padding:.12em .38em; border-radius:2px}
+.formula{margin-top:24px; padding:20px 22px; background:var(--sunk);
+         border:1px solid var(--rule); border-radius:3px; overflow-x:auto;
+         font:400 14px/1.9 "JetBrains Mono",monospace; color:var(--ink-2)}
+.formula b{color:var(--ink); font-weight:700}
+
+footer{margin-top:88px; padding-top:26px; border-top:1px solid var(--rule);
+       font-size:13px; line-height:1.65; color:var(--ink-3); max-width:76ch}
+
+@media (max-width:760px){
+  .wrap{padding:0 20px 76px}
+  .lrow{grid-template-columns:1fr}
+  .lcell + .lcell{border-left:none; border-top:1px solid var(--rule)}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">World Cup Trading Championships &middot; 1983&ndash;2026</div>
+  <h1>Winning is <em>not</em> edge</h1>
+  <p class="standfirst">A contest that scores traders on the highest percentage return, over one year, on a real but deliberately tiny account. Forty-two years of champions. The question is what a win actually measures &mdash; and the answer is legible in the rulebook, in the mathematics of goal-reaching, and above all in what happened to the champions afterwards.</p>
+  <div class="byline">
+    <span>Run by Robbins Trading Company</span>
+    <span>Sponsored by WorldCupAdvisor, which sells the winners&rsquo; signals</span>
+    <span>Prize: a pewter trophy. No cash.</span>
+  </div>
+</header>
+
+<div class="split">
+  <div class="sc">
+    <div class="k">The number it advertises</div>
+    <div class="v vb m">11,376%</div>
+    <div class="n">Larry Williams, 1987. Published by the sponsor, never independently audited.</div>
+  </div>
+  <div class="sc">
+    <div class="k">The median winner</div>
+    <div class="v vs m">252%</div>
+    <div class="n">Across 42 flagship futures champions. The lowest winning year was 53%.</div>
+  </div>
+  <div class="sc">
+    <div class="k">Williams&rsquo; documented live account</div>
+    <div class="v vc m">12.4%<span style="font-size:.5em">/yr</span></div>
+    <div class="n">His own money on WorldCupAdvisor, 8.6 years to Oct 2022. Worst drawdown &minus;47.8%.</div>
+  </div>
+</div>
+
+<section>
+  <div class="col">
+    <div class="kicker">The rulebook</div>
+    <h2>The leaderboard is a best-of-N draw, by rule</h2>
+    <p class="lede">This is the finding that reframes everything else, and it is sitting in the entry agreement in plain language.</p>
+  </div>
+
+  <blockquote>
+    <p>&ldquo;Entrant may open more than one account at the beginning of the Championship or at any time during the Championship Period. Each account must be separately funded and margined&hellip; <strong>Only the best performing account will be used for ranking purposes.</strong>&rdquo;</p>
+    <cite>Rule 1, Official Futures Entry Agreement &mdash; replacing the pre-2021 language, which aggregated all of an entrant&rsquo;s accounts</cite>
+  </blockquote>
+
+  <div class="col">
+    <p>Rule 7 completes it: if equity falls below $2,500 the broker may liquidate, and &ldquo;a new account may be established with new funds at any time.&rdquo;</p>
+    <p>So one person can run five accounts, have four destroyed, and be ranked on the fifth. Nobody has cheated. The contest simply reports the maximum of a sample and calls it a result. And because only the top five are ever published, <strong>every failure in the entire history of the competition is invisible by construction</strong> &mdash; there is not one negative return anywhere in 416 rows of standings.</p>
+    <p>The entrant count has never been disclosed, in any year, in any document. That is the one number you would need to interpret the leaderboard at all.</p>
+  </div>
+
+  <div class="callout quiet">
+    <div class="h">In fairness, the mechanics are honest</div>
+    <p>The accounts are real, funded at CFTC-registered brokers. The denominator is cumulative deposits, withdrawals are added back so you cannot flatter the ratio by taking money out, all trading must happen inside the monitored account, and cross-account hedging is explicitly barred. The arithmetic is not rigged. What is misleading is not the sum &mdash; it is what the sum is taken to prove. The organiser says as much itself: <em>&ldquo;WCC competitors may control accounts that produce results substantially different than the results achieved in their WCC accounts.&rdquo;</em></p>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <div class="kicker">The mathematics</div>
+    <h2>Contest-optimal bet size does not contain your edge</h2>
+    <p>&ldquo;Maximise the probability of reaching target <span class="m">b</span> by time <span class="m">T</span>&rdquo; has a closed-form solution &mdash; Browne (1999), equivalently Föllmer&ndash;Leukert quantile hedging. The optimal dollar exposure is:</p>
+  </div>
+
+  <div class="formula">
+θ*(t,x)  =  <b>b · φ( Φ⁻¹(x/b) ) / ( σ · √(T−t) )</b>          ← contest-optimal
+θ_kelly  =  <b>(λ/σ) · x</b>                                    ← growth-optimal
+
+              λ = Sharpe ratio.  <b>It appears in one of these and not the other.</b>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Your true Sharpe</th><th class="n">Contest-optimal exposure</th><th class="n">Kelly exposure</th><th class="n">P(triple your money)</th></tr></thead>
+      <tbody>
+        <tr><td>0.0 &mdash; no skill whatsoever</td><td class="n brass">3.64</td><td class="n">0.00</td><td class="n">33.3%</td></tr>
+        <tr><td>0.5</td><td class="n brass">3.64</td><td class="n">1.67</td><td class="n">52.8%</td></tr>
+        <tr><td>1.0 &mdash; a very good systematic trader</td><td class="n brass">3.64</td><td class="n">3.33</td><td class="n">64.4%</td></tr>
+        <tr><td>2.0 &mdash; world class</td><td class="n brass">3.64</td><td class="n">6.67</td><td class="n">85.8%</td></tr>
+      </tbody>
+      <caption>Target 3&times; in one year, 30% volatility. Contest-optimal position size is <em>identical</em> across every level of skill, because it is the delta of a digital option &mdash; a hedging quantity, not an information quantity. Kelly scales directly with the edge.</caption>
+    </table>
+  </div>
+
+  <div class="col">
+    <p><strong>Kelly sizing asks &ldquo;how much do I know?&rdquo; Contest sizing asks &ldquo;how far am I from the bar, and how little time is left?&rdquo;</strong> A trader with no edge sizes exactly like a trader with a large one. The edge changes their odds of winning; it does not change their bet.</p>
+    <p>And the payoff shape makes maximum variance rational rather than reckless. Your loss is capped at the stake and the fee; your win is a marketable track record. For an indicator payoff, every mean-preserving spread strictly raises your objective as long as you are not already expected to win. There is no interior optimum coming from the risk side at all.</p>
+  </div>
+
+  <div class="callout brassy">
+    <div class="h">The condition that makes it a trap</div>
+    <p>Convexity alone does <em>not</em> produce this. Panageas &amp; Westerfield (2009) show that a manager with the same option-like payoff but an <em>infinite</em> horizon optimally behaves like a Kelly bettor. The risk-seeking &ldquo;relies on combining finite horizons and convex compensation schemes rather than on convexity alone.&rdquo; A tournament is convexity plus a hard 31 December. A career is convexity plus no deadline at all. Same payoff, opposite optimal policy &mdash; and the horizon is the switch.</p>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <div class="kicker">Simulation</div>
+    <h2>What a field of zero-skill traders produces</h2>
+    <p>252 trading days, futures-like volatility, realistic costs, forced liquidation at &minus;90%, and <strong>every single entrant given a Sharpe of exactly zero</strong>. 4,000 simulated championships per row.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th class="n">Entrants</th><th class="n">Leverage</th><th class="n">Winner&rsquo;s median</th><th class="n">Winner p99</th><th class="n">Typical entrant</th><th class="n">Wiped out</th></tr></thead>
+      <tbody>
+        <tr><td class="n">250</td><td class="n">3&times;</td><td class="n">+256%</td><td class="n">+536%</td><td class="n">&minus;17%</td><td class="n">0%</td></tr>
+        <tr><td class="n">250</td><td class="n">6&times;</td><td class="n">+904%</td><td class="n">+3,411%</td><td class="n">&minus;45%</td><td class="n">8%</td></tr>
+        <tr class="em"><td class="n">250</td><td class="n">12&times;</td><td class="n brass">+3,432%</td><td class="n">+41,453%</td><td class="n crim">&minus;90%</td><td class="n crim">63%</td></tr>
+        <tr class="em"><td class="n">500</td><td class="n">20&times;</td><td class="n brass">+7,125%</td><td class="n">+392,518%</td><td class="n crim">&minus;90%</td><td class="n crim">94%</td></tr>
+      </tbody>
+      <caption>The champion&rsquo;s spectacular number and the median entrant&rsquo;s ruin are not two facts. They are one fact, read at two points of the same distribution.</caption>
+    </table>
+  </div>
+
+  <div class="col">
+    <h3>Skill barely moves the winner. It transforms everyone else.</h3>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>True Sharpe of the whole field</th><th class="n">Leverage</th><th class="n">Winner posts</th><th class="n">Typical entrant</th></tr></thead>
+      <tbody>
+        <tr><td>0.0 &mdash; nobody can trade</td><td class="n">6&times;</td><td class="n brass">+911%</td><td class="n crim">&minus;45%</td></tr>
+        <tr class="gd"><td>1.0 &mdash; everybody is excellent</td><td class="n">6&times;</td><td class="n brass">+2,792%</td><td class="n steel">+56%</td></tr>
+        <tr><td>0.0 &mdash; nobody can trade</td><td class="n">12&times;</td><td class="n brass">+3,469%</td><td class="n crim">&minus;90%</td></tr>
+        <tr class="gd"><td>1.0 &mdash; everybody is excellent</td><td class="n">12&times;</td><td class="n brass">+28,548%</td><td class="n crim">&minus;20%</td></tr>
+      </tbody>
+      <caption>Turning a field from hopeless to world-class changes the champion&rsquo;s headline by a factor of three &mdash; invisible on a leaderboard. It moves the median entrant from &minus;45% to +56%. The leaderboard is the uninformative statistic; the distribution of all entrants is the informative one, and it is the one nobody publishes.</caption>
+    </table>
+  </div>
+
+  <div class="col">
+    <p>An independent extreme-value calculation reaches the same place analytically: for a zero-edge field the expected winning return is roughly <span class="m">N</span>&times; capital, so <strong>any headline below <span class="m">ln N</span> in log terms is fully explained by field size before you examine a single trade</strong>. Two separate routes put the probability of a 1987-magnitude result arising by chance in a 100-strong field at about <strong>10%</strong> &mdash; and the contest has run every year since 1983.</p>
+    <p>That is not a claim that Larry Williams lacks skill; he has a multi-decade public record. It is a claim that the single headline number carries almost no evidential weight. Which is precisely what he says about it himself.</p>
+  </div>
+
+  <blockquote>
+    <p>&ldquo;For years people have asked for my trades to figure out how I did it. I gladly oblige them, they will learn little there &mdash; what created the gargantuan gain was <strong>not great trading ability</strong> nearly as much as the very aggressive form of money management I used&hellip; That&rsquo;s what made the cool million smackers &mdash; not some great trading skill.&rdquo;</p>
+    <cite>Larry Williams, <em>Long-Term Secrets to Short-Term Trading</em> (Wiley, 1999)</cite>
+  </blockquote>
+
+  <div class="col">
+    <p>In the same book he records the drawdown inside his winning year: the account ran from $10,000 to $2,100,000, then <strong>&ldquo;spiraling down to $700,000&rdquo;</strong> &mdash; a 66.7% peak-to-trough collapse &mdash; before finishing near $1.1m. He also records that the method destroyed accounts he ran for other people (&ldquo;Brokers and clients screamed&rdquo;), and that regulators seized his records for over a year. His prescription today is 10&ndash;15% of the account divided by the largest historical loss, with a warning that the cliff sits between 14% and 21%.</p>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <div class="kicker">The aftermath test</div>
+    <h2>What happened to the champions</h2>
+    <p class="lede">The luck hypothesis makes one clean prediction: regression to the mean. This is the cheapest and most informative test available, and the data exists because WorldCupAdvisor publishes its lead accounts.</p>
+  </div>
+
+  <div class="ledger">
+    <div class="lhead">Champion &nbsp;·&nbsp; the headline &nbsp;·&nbsp; what came next</div>
+
+    <div class="lrow">
+      <div class="lcell">
+        <div class="lname">Larry Williams</div>
+        <div class="lmeta">1987 futures champion<br>The record that sells the contest</div>
+      </div>
+      <div class="lcell">
+        <div class="lbig brass">+11,376%</div>
+        <div class="lsub">One year. Sponsor-published, unaudited. &minus;66.7% drawdown inside the winning year, by his own account.</div>
+      </div>
+      <div class="lcell">
+        <div class="lbig crim">+12.4%<span style="font-size:.55em">/yr</span></div>
+        <div class="lsub">His own money, tracked live on WorldCupAdvisor for 8.6 years to Oct 2022: +172.6% total, worst drawdown &minus;47.8%. Both his programmes vanish from the site after 2022. He is not a registered CTA. He sells education.</div>
+      </div>
+    </div>
+
+    <div class="lrow">
+      <div class="lcell">
+        <div class="lname">Andrea Unger</div>
+        <div class="lmeta">2008, 2009, 2010 annual titles<br>plus a 2012 quarterly &mdash; the strongest case</div>
+      </div>
+      <div class="lcell">
+        <div class="lbig brass">+672%</div>
+        <div class="lsub">2008. Then 115% and 240%. Up to 20% risk per trade in contest phases; once 47&ndash;48% in drawdown and near the margin floor.</div>
+      </div>
+      <div class="lcell">
+        <div class="lbig steel">+38%<span style="font-size:.55em">/yr</span></div>
+        <div class="lsub">Live &ldquo;East &amp; West&rdquo; programme, 34 months, &minus;16.1% drawdown &mdash; genuinely good, and it closed. His own self-published 2025 result: <strong>under 10%</strong>. He published it rather than hiding it.</div>
+      </div>
+    </div>
+
+    <div class="lrow">
+      <div class="lcell">
+        <div class="lname">Michelle Williams</div>
+        <div class="lmeta">1997 futures champion, aged 16 or 17<br>Third-highest result in 42 years</div>
+      </div>
+      <div class="lcell">
+        <div class="lbig brass">+1,001%</div>
+        <div class="lsub">Larry Williams&rsquo; daughter.</div>
+      </div>
+      <div class="lcell">
+        <div class="lbig crim">Never traded again</div>
+        <div class="lsub">She became an Oscar-nominated actress. Arguably the single most informative row in the whole dataset.</div>
+      </div>
+    </div>
+
+    <div class="lrow">
+      <div class="lcell">
+        <div class="lname">Kevin Davey</div>
+        <div class="lmeta">2006 champion; 2nd in 2005 and 2007<br>Three consecutive top-two finishes</div>
+      </div>
+      <div class="lcell">
+        <div class="lbig steel">+107%</div>
+        <div class="lsub">One of the lowest winning returns in the contest&rsquo;s history &mdash; and he targeted it deliberately.</div>
+      </div>
+      <div class="lcell">
+        <div class="lbig steel">Wrote down the method</div>
+        <div class="lsub">Before entering he pulled ten years of top-three finishers and computed that ~100% would place. Staked $15,000 he was fully prepared to lose. Calls running real money that way &ldquo;idiotic.&rdquo;</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <p>Davey is worth dwelling on, because he did the honest thing before anyone asked him to. He also says his winning year turned on a single copper trade, without which he would not have won, and describes it as &ldquo;the worst of the three years.&rdquo; When he wrote the victory up expecting applause, Van Tharp replied: <em>&ldquo;So what, he won a trading contest. That&rsquo;s kind of reckless.&rdquo;</em> Davey was angry, then agreed.</p>
+
+    <h3>The platform&rsquo;s own numbers</h3>
+    <p>These are drawdowns on lead accounts that WorldCupAdvisor <em>chose to feature</em>, self-published and net of fees: Tim Birch &minus;69.3%, Marco Vironda Gambin &minus;63.3%, Petra Zacek (2018 champion) &minus;56.5%, Stefano Serafini (2017 champion) &minus;56.0%, Brent Carlile (2024 champion) &minus;52.5%. One programme reached &minus;78.2% and then disappeared from the rankings entirely.</p>
+    <p>The characteristic shape is a spectacular opening followed by a long give-back. Yuwen Cao&rsquo;s programme reads +183% at 5 months, +235% at 12, +123% at 18, <strong>+55% at 33</strong>. Brent Carlile: +161% at 9 months, +70% at 16, +104% at 31, <strong>+39% at 37</strong>.</p>
+  </div>
+
+  <div class="callout">
+    <div class="h">The tell, in one line</div>
+    <p>An independent CTA database ranks managers by year-to-date return. In November 2025 the number-one ranked programme was a World Cup Advisor account at <span class="m">+471.8%</span> &mdash; with assets under management of <strong><span class="m">$29,000</span></strong>. In the same table: Crabel Capital, <span class="m">+9.90%</span> on <span class="m">$2.216 billion</span>. Same period, same methodology. The return ranking is very close to an inverse ranking of account size, which is the entire phenomenon in a single table.</p>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <div class="kicker">Calibration</div>
+    <h2>What professionals actually compound at</h2>
+    <p>Managed-futures returns look respectable until you correct them. Bhardwaj, Gorton &amp; Rouwenhorst worked through 827 funds and found the corrections are larger than the returns.</p>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Managed futures, 1994&ndash;2007</th><th class="n">Annual return</th><th class="n">Sharpe</th></tr></thead>
+      <tbody>
+        <tr><td>Live funds only &mdash; the naive number</td><td class="n">12.6%</td><td class="n">0.73</td></tr>
+        <tr><td>+ dead funds added back (survivorship-corrected)</td><td class="n">9.4%</td><td class="n">0.55</td></tr>
+        <tr class="em"><td>+ pre-reporting returns excluded (backfill-corrected)</td><td class="n crim">4.9%</td><td class="n crim">0.09</td></tr>
+      </tbody>
+      <caption>A 7.7-point correction. The average CTA beat T-bills by 85 basis points a year &mdash; statistically indistinguishable from zero &mdash; while collecting 5.4% of gross excess return in fees. The standard &ldquo;36-month screen&rdquo; fix removes almost none of the bias, because the average fund backfills 43 months.</caption>
+    </table>
+  </div>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Reference points</th><th class="n">CAGR</th><th class="n">Max drawdown / Sharpe</th></tr></thead>
+      <tbody>
+        <tr><td>SG Trend Index &mdash; the ten largest trend CTAs, since 2000</td><td class="n">4.98%</td><td class="n">&minus;20.6%</td></tr>
+        <tr><td>Barclay BTOP50, since 2000</td><td class="n">3.90%</td><td class="n">&minus;15.9%</td></tr>
+        <tr><td>DUNN WMA, since 1984</td><td class="n">~14%</td><td class="n">&minus;60.3%</td></tr>
+        <tr><td>Berkshire Hathaway &mdash; best Sharpe of any 30-year record</td><td class="n">&mdash;</td><td class="n">Sharpe 0.79</td></tr>
+        <tr class="gd"><td>Renaissance Medallion, 1988&ndash;2018 gross &mdash; the genuine outlier</td><td class="n steel">63.3%</td><td class="n">Sharpe &gt;2.0</td></tr>
+        <tr class="em"><td><strong>Median World Cup futures champion</strong></td><td class="n brass">252%</td><td class="n">one year of data</td></tr>
+      </tbody>
+      <caption>Medallion is capacity-capped at ~$10bn and closed to outside money, because the cap is the real ceiling on the edge. A one-year contest result carries T = 1; even a true Sharpe of 3.0 produces a t-statistic of about 1.28 over a single year, which is statistically silent no matter who wins.</caption>
+    </table>
+  </div>
+
+  <div class="col">
+    <h3>And the base rate for everyone else</h3>
+    <p>US brokers must publish, quarterly, the share of retail forex accounts that were profitable. Across the three genuinely speculative brokers in Q2 2026 &mdash; 83,584 accounts &mdash; <strong>33.5% were profitable</strong>. If quarters were independent, 1.2% would string four together.</p>
+    <p>The two best academic datasets say the same thing more sharply. Barber, Lee, Liu &amp; Odean, on fifteen years of Taiwanese day traders: <em>&ldquo;less than 1% of the day trader population is able to predictably and reliably earn positive abnormal returns net of fees.&rdquo;</em> Roughly 20% look profitable in any given year &mdash; that 20% collapses to under 1% the moment you sort on one year and measure the next. Survival at one, two and three years: 44%, 24%, 15%.</p>
+    <p>And the futures-specific study, on Brazilian index futures, the world&rsquo;s third-largest such market. Of 19,646 people who began day trading, 1,551 persisted for 300 days or more. Of those: <strong>97% lost money, 0.4% earned more than a bank teller</strong>, and the single best individual made $310 a day with a standard deviation of $2,560. The authors found no evidence of learning.</p>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <div class="kicker">What survives</div>
+    <h2>The part that is real</h2>
+    <p>The sceptical reading usually overshoots here, so state it plainly: Unger and Davey are genuinely systematic traders who have written down a replicable process. That process transfers. None of the headline numbers do, and both men say so in print.</p>
+    <ul>
+      <li><strong>Davey develops on one contract.</strong> He runs about fifty strategies simultaneously precisely so that no single one matters, and applies position sizing only afterwards, driven by Monte Carlo with hard caps on risk of ruin. His default assumption &mdash; that every backtest has good luck baked into it &mdash; is a multiple-testing correction expressed as a habit.</li>
+      <li><strong>Unger diversifies across 30&ndash;40 markets</strong> and several system families, sizes by dollar-volatility bucketing, caps risk at 1% of equity in live trading against up to 20% in contests, and treats optimal <span class="m">f</span> as a cliff to locate rather than a target to hit.</li>
+      <li><strong>The asymmetry that justifies all of it.</strong> Expected log growth is symmetric about full Kelly, so half-Kelly and 1.5&times; Kelly compound at the same rate &mdash; but the probability of ever halving your capital goes from 12.5% to 79.4%, and of ever losing 90% from 0.1% to 46.4%. You buy a sixfold reduction in ruin risk for a quarter of your growth rate. Above 2&times; Kelly, growth is zero and ruin is certain while the arithmetic mean still explodes.</li>
+    </ul>
+  </div>
+
+  <div class="callout quiet">
+    <div class="h">A warning specific to this tradition</div>
+    <p>Optimal <span class="m">f</span>, as popularised in exactly these circles, sizes off the <em>largest historical loss</em> &mdash; an order statistic of the sample, and therefore the single most over-fitted quantity in any dataset. It is growth-optimal in-sample and systematically over-levered out-of-sample. In gappy markets that is worse than the lognormal model suggests, because ruin becomes an atom rather than a limit.</p>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <div class="kicker">Verdict</div>
+    <h2>Legitimate in its mechanics, misleading in its implications</h2>
+    <p>Real trades, real money at registered brokers, an honest denominator, cross-account hedging barred, and one legal challenge to the business model that failed on the merits. None of that is in dispute.</p>
+    <p>Against it: an undisclosed field size, top-five-only publication so failures cannot be counted, an explicit rule that ranks your best account out of as many as you care to fund, no independent audit anywhere in the entry agreement, a percentage metric computed on a deliberately tiny stake, and an organiser that is simultaneously the introducing broker and a fee-splitting partner in the copy-trading platform the title feeds &mdash; where subscriptions can run 24&ndash;36% of the minimum account per year and lead traders are paid per follower, not on performance.</p>
+    <p><strong>It manufactures marketable track records far more reliably than it identifies durable skill, and it does so without needing anyone to cheat.</strong></p>
+    <p>The champion-to-educator pipeline is the dominant career path afterwards, and it is the honest tell: of the champions whose subsequent businesses can be traced, the largest ones sell instruction rather than returns.</p>
+  </div>
+
+  <div class="callout brassy">
+    <div class="h">The one-sentence answer</div>
+    <p>People win this contest by taking the largest position their nerve allows on the smallest account the rules permit, in a field whose size is never published, with only the best of their several accounts counted &mdash; and the mathematics says the optimal way to do that is <em>identical whether or not they can trade at all</em>.</p>
+  </div>
+</section>
+
+<footer>
+  Compiled 22 August 2026 from the organiser&rsquo;s official standings and entry agreements, archived WorldCupAdvisor captures, an independent CTA database, the champions&rsquo; own books and interviews, and the academic literature on tournament incentives, goal-reaching portfolio theory, Kelly sizing and retail trader profitability. Headline contest returns are sponsor-published and not independently audited; that is stated wherever they appear. Simulation figures are my own Monte Carlo, described in the text. Not investment advice.
+</footer>
+
+</div>
