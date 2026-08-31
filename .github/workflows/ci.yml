@@ -124,6 +124,31 @@ jobs:
               if f"{v:.2f}" not in text and f"{v:.1f}" not in text:
                   bad.append(f"{v} appears in neither README.md nor out/REPORT.md")
 
+          # Checking only that the RIGHT numbers appear somewhere let a
+          # retracted one survive in four other files: the HTML report and its
+          # template kept publishing 11.90% for the no-timing null long after
+          # the README said 13.65%, and the console log carried it too. So also
+          # assert the wrong values are GONE, everywhere a reader might look.
+          RETRACTED = {
+              "11.90": "the pre-dividend no-timing null",
+              "9.99 points": "the old timing-rule gap",
+              "roughly 0.3 points": "an error bar that traced to no artifact",
+              "4.7% CAGR": "an underperformance figure matching no rung",
+          }
+          EXPLAINS = ("used to be", "previously", "earlier draft", "retracted",
+                      "was measured on price return", "traced to nothing")
+          for rel in ("README.md", "out/REPORT.md", "report.template.html",
+                      "out/report.html", "out/backtest.log",
+                      ".claude/skills/daily-scan/SKILL.md", "src/report.py"):
+              p = pathlib.Path(rel)
+              if not p.exists():
+                  continue
+              for line in p.read_text(encoding="utf-8", errors="replace").splitlines():
+                  for stale, what in RETRACTED.items():
+                      if stale in line and not any(e in line for e in EXPLAINS):
+                          bad.append(f"{rel}: still states {stale} ({what}) -- "
+                                     f"{line.strip()[:80]}")
+
           print("\n".join(f"  {k}: {v:.4f}" for k, v in got.items()))
           if bad:
               print("\nMISMATCH:")

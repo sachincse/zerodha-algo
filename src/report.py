@@ -132,6 +132,21 @@ def write_report() -> str | None:
         A(f"A {len(wf.get('picks', []))}-window walk-forward: three years train, "
           f"one year test, the SMA pair re-chosen each year on training-period "
           f"Sharpe alone.\n")
+        # Without this note the same strategy and the same benchmark appear at
+        # two different values inside one document, and a reader has no way to
+        # know the window changed. Three years are consumed by the first
+        # training fold before any out-of-sample year exists.
+        _picks = wf.get("picks") or []
+        _years = [p.get("year") for p in _picks
+                  if isinstance(p, dict) and p.get("year")]
+        _from = (d.get("args") or {}).get("trade_from", "2011-01-01")
+        A(f"**These numbers cover a different window from the ladder above, "
+          f"which is why the same rows carry different values.** Three years "
+          f"are consumed by the first training fold, so this table begins at "
+          f"{min(_years) if _years else 'the fourth year'} while the ladder "
+          f"begins at {_from}. Fixed 6/30 and the benchmark differ between the "
+          f"two tables for that reason alone. Compare rows within a table, "
+          f"never across them.\n")
         A("| | CAGR | Sharpe | max DD |")
         A("|---|---|---|---|")
         A(f"| walk-forward tuned (honest) | {_f(wf['walk_forward']['cagr_pct'])}% | "
@@ -167,8 +182,11 @@ def write_report() -> str | None:
       f"(GST already included). About 24 bps round trip on a Rs 1 lakh position. "
       f"Total paid: **Rs {s3.get('total_charges', 0):,.0f}** on a "
       f"Rs {s3['initial']:,.0f} book.")
-    A(f"- **Dividends** credited on ex-date to positions held through it: "
-      f"Rs {s3.get('total_dividends', 0):,.0f}.")
+    A(f"- **Dividends**: Rs {s3.get('total_dividends', 0):,.0f}. Summed over "
+      f"each holding period and paid as a lump at EXIT, uncompounded; a "
+      f"position still open on the last bar forgoes them. Both simplifications "
+      f"are conservative. (The buy-and-hold null credits on the ex-date, which "
+      f"is why it is the more generous of the two comparisons.)")
     A("- **Long only.** A retail account cannot hold a short equity position "
       "overnight in India: SEBI bans naked shorts and delivery must be honoured "
       "at T+1. The bearish half of the video's signal is an exit, not a trade.")
@@ -189,10 +207,14 @@ def write_report() -> str | None:
       "from symbols that are *currently listed*. Companies delisted or merged "
       "away over the period are absent, and they were disproportionately the "
       "losers. The true number is worse than the one above, not better.")
-    A("- **Free data.** Prices come from Yahoo, not NSE bhavcopy. Re-pulling the "
-      "same window moved the 15-year CAGR by roughly 0.3 points, so treat every "
-      "figure as plus or minus half a point. The conclusion is many times larger "
-      "than that band.")
+    A("- **Free data.** Prices come from Yahoo, not NSE bhavcopy, and Yahoo "
+      "revises history, so re-pulling the same window will move these figures. "
+      "How much has never been measured, so no error bar is quoted: an earlier "
+      "draft claimed 'roughly 0.3 points' and that number traced to nothing on "
+      "disk. To measure it, re-run fetch_data.py --refresh into a copy of "
+      "data/cache/, re-run the backtest, and diff the two summaries.json. What "
+      "IS measured is the tiebreak band, and the 8.78-point shortfall is far "
+      "larger than any plausible revision.")
     A("- **Fills at the printed open.** NSE's daily open is the pre-open call "
       "auction price, and a retail market order is not guaranteed to be inside "
       "that auction. The 25 bps assumption stands in for that uncertainty; "
@@ -208,11 +230,12 @@ def write_report() -> str | None:
     # ---- reproduce ----------------------------------------------------------
     A("## Reproduce\n")
     A("```bash")
-    A("python -m pytest tests/ -v          # 15 tests, incl. the future-scramble")
+    _end = (d.get("args") or {}).get("end", "2026-08-22")
+    A("python -m pytest tests/ -q         # causality suite + mutation tests")
     A("python fetch_data.py --list nifty500 --start 2010-01-01")
-    A("python fetch_benchmark.py")
-    A("python run_backtest.py")
-    A("python run_walkforward.py")
+    A(f"python fetch_benchmark.py --end {_end}")
+    A(f"python run_backtest.py --end {_end}")
+    A(f"python run_walkforward.py --train-years 3 --end {_end}")
     A("```")
 
     p = os.path.join(OUT, "REPORT.md")

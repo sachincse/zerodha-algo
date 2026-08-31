@@ -251,7 +251,7 @@ footer{margin-top:84px; padding-top:26px; border-top:1px solid var(--rule);
       <div class="bar b-claim"><div class="fig num">12.47%</div><div class="stem" style="height:78%"></div></div>
       <div class="bar b-claim"><div class="fig num">5.85%</div><div class="stem" style="height:37%"></div></div>
       <div class="bar b-loss"><div class="fig num">1.92%</div><div class="stem" style="height:12%"></div></div>
-      <div class="bar b-gain-soft"><div class="fig num">11.90%</div><div class="stem" style="height:75%"></div></div>
+      <div class="bar b-gain-soft"><div class="fig num">13.65%</div><div class="stem" style="height:86%"></div></div>
       <div class="bar b-gain"><div class="fig num">10.70%</div><div class="stem" style="height:67%"></div></div>
     </div>
     <div class="blabels">
@@ -272,7 +272,7 @@ footer{margin-top:84px; padding-top:26px; border-top:1px solid var(--rule);
         <tr><td class="num">S1</td><td>Fills moved to the next session&rsquo;s open.</td><td class="n mid">12.47%</td><td class="n">0.44</td><td class="n">&minus;26.9%</td><td class="n">&minus;0.21</td></tr>
         <tr><td class="num">S2</td><td>Zerodha charges, STT, stamp, GST, DP, 25&nbsp;bps slippage.</td><td class="n">5.85%</td><td class="n">0.03</td><td class="n">&minus;32.3%</td><td class="n neg">&minus;6.62</td></tr>
         <tr class="hl"><td class="num">S3</td><td>Point-in-time universe instead of today&rsquo;s index members.</td><td class="n">1.92%</td><td class="n">&minus;0.20</td><td class="n">&minus;42.1%</td><td class="n neg">&minus;3.94</td></tr>
-        <tr class="ok"><td>&mdash;</td><td><strong>Same universe, no timing rule at all</strong></td><td class="n pos">11.90%</td><td class="n">0.35</td><td class="n">&minus;46.8%</td><td class="n">&mdash;</td></tr>
+        <tr class="ok"><td>&mdash;</td><td><strong>Same universe, no timing rule at all</strong></td><td class="n pos">13.65%</td><td class="n">0.44</td><td class="n">&minus;44.9%</td><td class="n">&mdash;</td></tr>
         <tr class="ok"><td>&mdash;</td><td><strong>Nifty 100 total-return index, net of fees</strong></td><td class="n pos">10.70%</td><td class="n">0.32</td><td class="n">&minus;38.0%</td><td class="n">&mdash;</td></tr>
       </tbody>
       <caption>Costs took 6.6 points a year. Survivorship bias took another 3.9. Fill timing &mdash; the classic look-ahead leak &mdash; was worth 0.2, because a 6/30 crossover is slow enough that one session barely matters. The famous leak is the smallest; the two that actually matter are the ones nobody mentions.</caption>
@@ -297,8 +297,8 @@ footer{margin-top:84px; padding-top:26px; border-top:1px solid var(--rule);
   <div class="col">
     <div class="kicker">Diagnosis</div>
     <h2>The universe was fine. The rule was the problem.</h2>
-    <p>Buying the <em>same</em> hundred stocks the strategy was choosing from &mdash; equal-weighted, rebalanced monthly, no timing whatsoever, paying exactly the same charges &mdash; returned <strong>11.90% a year</strong>. That beats the index. So the stock pool was not the issue.</p>
-    <p>Bolting the crossover rule on top of that pool took it from 11.90% down to 1.92%. <strong>The timing rule destroyed ten points a year</strong> relative to simply holding what it was already looking at.</p>
+    <p>Buying the <em>same</em> hundred stocks the strategy was choosing from &mdash; equal-weighted, rebalanced monthly, no timing whatsoever, paying exactly the same charges &mdash; returned <strong>13.65% a year</strong>. That beats the index. So the stock pool was not the issue.</p>
+    <p>Bolting the crossover rule on top of that pool took it from 13.65% down to 1.92%. <strong>The timing rule destroyed 11.74 points a year</strong> relative to simply holding what it was already looking at.</p>
   </div>
 
   <div class="callout">
@@ -465,7 +465,7 @@ PROPOSED ORDERS  <i>(nothing has been sent)</i>
     <p>Stated so you can discount the result yourself &mdash; and note that every one of these points the same way, <em>against</em> the strategy.</p>
     <ul>
       <li><strong>Residual survivorship bias.</strong> The point-in-time universe is drawn from symbols that are listed <em>today</em>. Companies delisted or merged away over fifteen years are absent, and they were disproportionately the losers. The true number is worse than 1.92%, not better.</li>
-      <li><strong>Free data.</strong> Prices come from Yahoo, not NSE bhavcopy. Re-pulling the same window moved the 15-year CAGR by about 0.3 points, so treat every figure as &plusmn;0.5. The conclusion is seventeen times larger than that band.</li>
+      <li><strong>Free data.</strong> Prices come from Yahoo, not NSE bhavcopy, and Yahoo revises history, so re-pulling the same window will move these figures. How much has never been measured, so no error bar is quoted here &mdash; an earlier draft claimed &plusmn;0.5 points and that number traced to nothing on disk. The 8.78-point shortfall is far larger than any plausible revision.</li>
       <li><strong>Fills at the printed open.</strong> NSE&rsquo;s daily open is the pre-open call auction price, and a retail market order is not guaranteed to be inside that auction. The 25&nbsp;bps assumption stands in for that uncertainty.</li>
       <li><strong>Circuit bands are approximated</strong> by a flat 10% gap test rather than the real per-scrip dynamic band, ASM/GSM surveillance state and series restrictions. Only 2 fills were blocked by it; the real number would be somewhat higher.</li>
       <li><strong>No taxes.</strong> Short-term capital gains would take a further bite out of a strategy with a 25-day median holding period, and would not touch a buy-and-hold benchmark.</li>

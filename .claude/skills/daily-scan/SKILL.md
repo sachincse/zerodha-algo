@@ -51,8 +51,12 @@ conversation, one order at a time.
 
 ## Context the user should have every time
 
-This strategy underperformed the Nifty 100 by roughly 4.7% CAGR over 2011-2026
-once fills, Zerodha charges and a point-in-time universe were modelled honestly.
+This strategy underperformed the Nifty 100 total-return index by **8.78 points
+of CAGR** over 2011-2026 once fills, Zerodha charges and a point-in-time
+universe were modelled honestly: 1.92% against 10.70%. Holding the same hundred
+stocks with no timing rule at all returned 13.65%, so the crossover destroyed
+11.74 points a year relative to the pool it was already choosing from.
+
 See `out/REPORT.md`. If the user is placing these trades, they are doing so
 against the backtest, not because of it. Say this once per session, briefly, not
 on every message.

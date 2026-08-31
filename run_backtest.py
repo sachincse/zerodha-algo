@@ -5,7 +5,7 @@ the cost of each lie is visible as a number rather than argued about:
 
     S0  naive      same-bar close fill, no costs, no slippage, today's Nifty 100
     S1  + real fill        signal at close t, filled at open t+1
-    S2  + real costs       Zerodha charges, STT, stamp, GST, DP, 10bps slippage
+    S2  + real costs       Zerodha charges, STT, stamp, GST, DP, 25bps slippage
     S3  + real universe    point-in-time top-100 by trailing traded value
 
 S3 is the only rung whose number means anything. Everything above it is there to

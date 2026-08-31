@@ -49,6 +49,8 @@ Even at an implausibly generous 5 bps - achievable only if every order lands ins
 
 A 13-window walk-forward: three years train, one year test, the SMA pair re-chosen each year on training-period Sharpe alone.
 
+**These numbers cover a different window from the ladder above, which is why the same rows carry different values.** Three years are consumed by the first training fold, so this table begins at the fourth year while the ladder begins at 2011-01-01. Fixed 6/30 and the benchmark differ between the two tables for that reason alone. Compare rows within a table, never across them.
+
 | | CAGR | Sharpe | max DD |
 |---|---|---|---|
 | walk-forward tuned (honest) | 11.21% | 0.34 | -27.05% |
@@ -79,7 +81,7 @@ Year by year, the pair that won the training window and what it then delivered:
 ## What was actually modelled
 
 - **Charges**: zero delivery brokerage, STT 0.1% both sides, NSE transaction 0.00307%, SEBI Rs 10/crore, stamp 0.015% on buy, GST 18% on (brokerage + transaction + SEBI), DP Rs 15.34 per scrip per sell day (GST already included). About 24 bps round trip on a Rs 1 lakh position. Total paid: **Rs 323,801** on a Rs 1,000,000 book.
-- **Dividends** credited on ex-date to positions held through it: Rs 231,568.
+- **Dividends**: Rs 231,568. Summed over each holding period and paid as a lump at EXIT, uncompounded; a position still open on the last bar forgoes them. Both simplifications are conservative. (The buy-and-hold null credits on the ex-date, which is why it is the more generous of the two comparisons.)
 - **Long only.** A retail account cannot hold a short equity position overnight in India: SEBI bans naked shorts and delivery must be honoured at T+1. The bearish half of the video's signal is an exit, not a trade.
 - **Unfilled orders**: 14 lapsed - no bar, zero volume, or the open gapped to the circuit band. A blocked entry drops the signal; a blocked exit holds the position and retries.
 - **Trades**: 1574, win rate 32%, median hold 25 days, profit factor 1.05, average exposure 0.92.
@@ -89,7 +91,7 @@ Year by year, the pair that won the training window and what it then delivered:
 Stated so you can discount the result yourself - and note that every one of these points the same way, against the strategy:
 
 - **Residual survivorship bias.** The point-in-time universe is drawn from symbols that are *currently listed*. Companies delisted or merged away over the period are absent, and they were disproportionately the losers. The true number is worse than the one above, not better.
-- **Free data.** Prices come from Yahoo, not NSE bhavcopy. Re-pulling the same window moved the 15-year CAGR by roughly 0.3 points, so treat every figure as plus or minus half a point. The conclusion is many times larger than that band.
+- **Free data.** Prices come from Yahoo, not NSE bhavcopy, and Yahoo revises history, so re-pulling the same window will move these figures. How much has never been measured, so no error bar is quoted: an earlier draft claimed 'roughly 0.3 points' and that number traced to nothing on disk. To measure it, re-run fetch_data.py --refresh into a copy of data/cache/, re-run the backtest, and diff the two summaries.json. What IS measured is the tiebreak band, and the 8.78-point shortfall is far larger than any plausible revision.
 - **Fills at the printed open.** NSE's daily open is the pre-open call auction price, and a retail market order is not guaranteed to be inside that auction. The 25 bps assumption stands in for that uncertainty; measured first-minute moves on Nifty 100 names have a median of about 21 bps and a 90th percentile near 60.
 - **Circuit bands are approximated** by a flat 10% gap test rather than the real per-scrip dynamic band, ASM/GSM surveillance state and series restrictions.
 - **No taxes.** Short-term capital gains would take a further bite out of a strategy with a 25-day median holding period, and would not touch a buy-and-hold benchmark.
@@ -97,9 +99,9 @@ Stated so you can discount the result yourself - and note that every one of thes
 ## Reproduce
 
 ```bash
-python -m pytest tests/ -v          # 15 tests, incl. the future-scramble
+python -m pytest tests/ -q         # causality suite + mutation tests
 python fetch_data.py --list nifty500 --start 2010-01-01
-python fetch_benchmark.py
-python run_backtest.py
-python run_walkforward.py
+python fetch_benchmark.py --end 2026-08-22
+python run_backtest.py --end 2026-08-22
+python run_walkforward.py --train-years 3 --end 2026-08-22
 ```

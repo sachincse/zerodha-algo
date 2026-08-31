@@ -29,9 +29,9 @@ building point-in-time universe ...
 S0_naive  --  same-bar close fill, zero costs, today's Nifty 100
 ==============================================================================
   period            2011-01-03 -> 2026-08-21  (15.63y)
-  final equity      Rs 6,461,903   (from Rs 1,000,000)
+  final equity      Rs 6,459,615   (from Rs 1,000,000)
   CAGR              12.68%      benchmark 10.70%
-  total return      546.19%      benchmark 389.52%
+  total return      545.96%      benchmark 389.52%
   volatility        15.07%
   Sharpe            0.45       benchmark 0.32
   Sortino           0.60
@@ -110,6 +110,16 @@ S3_pit  --  next-open fill, full costs, POINT-IN-TIME universe
   band-blocked      2 (orders dropped because the open gapped to the circuit limit)
 
 ==============================================================================
+TIEBREAK SENSITIVITY (S3, same universe and costs)
+==============================================================================
+  alpha          CAGR   1.92%   Sharpe -0.20   maxDD  -42.1%   trades 1574
+  turnover       CAGR   0.66%   Sharpe -0.28   maxDD  -50.3%   trades 1584
+  spread         CAGR   2.44%   Sharpe -0.16   maxDD  -46.6%   trades 1529
+  reverse        CAGR   2.66%   Sharpe -0.15   maxDD  -47.5%   trades 1567
+
+  band 0.66% .. 2.66%  (spread 2.00 points). The shipped default is 'alpha'.
+
+==============================================================================
 SLIPPAGE SENSITIVITY (S3, point-in-time, full charges)
 ==============================================================================
      5 bps/side   CAGR   5.70%   Sharpe  0.03   maxDD  -33.4%
@@ -119,7 +129,7 @@ SLIPPAGE SENSITIVITY (S3, point-in-time, full charges)
 ==============================================================================
 NULL HYPOTHESES
 ==============================================================================
-  same universe, NO timing, same costs:   CAGR  11.90%   Sharpe  0.35   maxDD  -46.8%
+  same universe, NO timing, same costs:   CAGR  13.65%   Sharpe  0.44   maxDD  -44.9%
   bootstrapping random-timing null (1000 draws) ...
   random entries, same trade count & holding periods:
     strategy mean trade +0.284%   vs null +0.461%  [p05 -0.012%, p95 +0.924%]
@@ -132,10 +142,10 @@ NULL HYPOTHESES
 HOW MUCH EACH ASSUMPTION WAS WORTH (CAGR, % per year)
 ==============================================================================
   S0_naive           12.68%
-  S1_realfill        12.47%   (-0.21 vs previous rung)
+  S1_realfill        12.47%   (-0.20 vs previous rung)
   S2_realcost         5.85%   (-6.62 vs previous rung)
   S3_pit              1.92%   (-3.94 vs previous rung)
-  same univ, no timing   11.90%
+  same univ, no timing   13.65%
   NIFTY100_TRI_net   10.70%   (total return, net of a 25bps index-fund fee)
 
   Honest edge (S3 minus benchmark): -8.78% CAGR
