@@ -110,6 +110,22 @@ class ExecModel:
     band_tolerance: float = 0.002     # "within 0.2% of the band" counts as locked
     min_price: float = 20.0           # skip penny-priced instruments
     min_median_turnover: float = 5e7  # Rs 5 crore/day trailing median
+    # Signals are ranked by crossover recency, exactly as the video does. On any
+    # given day most fresh crossovers share bars_since == 0, so recency does not
+    # actually rank them -- the tiebreak decides who gets the free slots, and it
+    # was an undocumented alphabetical sort by symbol. That is arbitrary and it
+    # quietly favours names beginning with A.
+    #
+    #   alpha     alphabetical by symbol (what shipped, kept as the default so
+    #             published numbers stay reproducible)
+    #   turnover  most liquid first -- defensible, since a bigger book is easier
+    #             to actually fill
+    #   spread    widest short-vs-long gap first, i.e. strongest cross
+    #   reverse   reverse alphabetical, only useful for measuring the swing
+    #
+    # run_backtest.py --tiebreak-sensitivity reports the CAGR band across all
+    # four, which is the honest way to publish a number that depends on one.
+    tiebreak: str = "alpha"
 
 
 @dataclass(frozen=True)

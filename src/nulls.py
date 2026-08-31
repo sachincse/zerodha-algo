@@ -35,7 +35,23 @@ def pit_equal_weight(store: PriceStore, membership: pd.DataFrame,
     cl = cl.loc[idx]
     mem = membership.loc[idx]
 
+    # Dividends belong in this null, and were missing.
+    #
+    # The strategy credits every dividend it holds through, and the benchmark
+    # is a total-return index. This null was pure price return, so it was the
+    # odd one out — and the error ran in the STRATEGY's favour, because the
+    # thing it is losing to was being understated. An honest null has to be
+    # measured the same way as the thing it is a null for.
+    #
+    # Credited on the ex-date against the previous close, which is what a
+    # holder actually receives.
     rets = cl.pct_change()
+    div = getattr(store, "dividends", None)
+    if div is not None and len(div):
+        d = div.reindex(index=idx, columns=cl.columns).fillna(0.0)
+        rets = rets.add(d.div(cl.shift(1)).replace([np.inf, -np.inf], 0.0)
+                        .fillna(0.0), fill_value=0.0)
+
     w = mem.div(mem.sum(axis=1).replace(0, np.nan), axis=0).fillna(0.0)
 
     # Hold last month's weights through the month: the set in force on any day

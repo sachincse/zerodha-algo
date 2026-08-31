@@ -89,7 +89,7 @@ jobs:
   claims:
     name: published numbers match the artifacts
     runs-on: ubuntu-latest
-    # The prose quotes 1.92% / 10.70% / 11.90%. Those live in
+    # The prose quotes 1.92% / 10.70% / 13.65%. Those live in
     # out/summaries.json, which is committed. If someone edits one and not the
     # other, this fails rather than shipping a README that contradicts its own
     # evidence.
@@ -111,7 +111,7 @@ jobs:
               "benchmark": s["summaries"]["S3_pit"]["benchmark_cagr_pct"],
               "no_timing": s["nulls"]["pit_equal_weight"]["cagr_pct"],
           }
-          want = {"strategy": 1.92, "benchmark": 10.70, "no_timing": 11.90}
+          want = {"strategy": 1.92, "benchmark": 10.70, "no_timing": 13.65}
 
           bad = []
           for k, v in want.items():

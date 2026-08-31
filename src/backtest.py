@@ -5,11 +5,20 @@ The loop processes each day in a fixed order:
 
     for t in dates:
         1. FILL orders that were queued at the close of t-1, at open[t].
-        2. Credit dividends with ex-date t on positions already held.
-        3. MARK the book to close[t].
-        4. DECIDE: read prices up to and including t, queue orders for t+1.
+        2. MARK the book to close[t].
+        3. DECIDE: read prices up to and including t, queue orders for t+1.
 
-Step 4 is the only step that reads signals, and it happens after the book is
+DIVIDENDS, STATED ACCURATELY
+This used to claim dividends were credited on their ex-date. They are not.
+Every dividend with an ex-date inside a holding period is summed and paid as a
+lump at EXIT, uncompounded, and a position still open on the last bar forgoes
+its dividends entirely. That is a simplification, and it is conservative in
+both directions that matter: cash arrives later than it really would, and
+open-at-end positions are under-credited rather than over-credited. It is
+documented here rather than quietly assumed, because a reviewer reading the
+invariant above should not have to check whether it is true.
+
+Step 3 is the only step that reads signals, and it happens after the book is
 already marked, so nothing it computes can retroactively change today's P&L.
 Step 1 only ever consumes a queue built on a previous iteration. A decision made
 on day t therefore cannot be filled earlier than open[t+1], which is the first
@@ -298,7 +307,35 @@ def run_backtest(
 
             # Rank by recency of the crossover -- the video's rule. A fresh
             # cross (bars_since == 0) outranks an older one.
-            cands.sort()
+            #
+            # Recency alone does not produce an order, though. On most days the
+            # fresh crossovers all tie at bars_since == 0, so the TIEBREAK is
+            # what actually decides who gets the free slots. This used to be a
+            # bare cands.sort(), i.e. alphabetical by symbol: arbitrary,
+            # undocumented, and systematically kind to names starting with A.
+            # It is an explicit choice now, and its effect on the headline is
+            # measured rather than assumed -- run_backtest.py
+            # --tiebreak-sensitivity reports the CAGR band across all four.
+            #
+            # Python's sort is stable, so a second pass on the primary key
+            # preserves the order the first pass established within each tie.
+            mode = getattr(cfg.execution, "tiebreak", "alpha")
+            if mode == "turnover":
+                cands.sort(key=lambda c: -float(turnover.at[t, c[1]] or 0.0))
+                cands.sort(key=lambda c: c[0])
+            elif mode == "spread":
+                def _gap(sym: str) -> float:
+                    a, b = state["sma_short"].at[t, sym], state["sma_long"].at[t, sym]
+                    if pd.isna(a) or pd.isna(b) or not float(b):
+                        return 0.0
+                    return -abs(float(a) / float(b) - 1.0)
+                cands.sort(key=lambda c: _gap(c[1]))
+                cands.sort(key=lambda c: c[0])
+            elif mode == "reverse":
+                cands.sort(key=lambda c: c[1], reverse=True)
+                cands.sort(key=lambda c: c[0])
+            else:
+                cands.sort()
             budget_per_slot = equity_now / cfg.portfolio.max_positions
             projected_cash = cash
             for _, sym in cands[:free_slots]:

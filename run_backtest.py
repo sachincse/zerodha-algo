@@ -182,6 +182,36 @@ def main() -> None:
         pd.DataFrame([vars(t) for t in res.trades]).to_csv(
             os.path.join(OUT, f"trades_{r['key']}.csv"), index=False)
 
+    # ---- tiebreak sensitivity ---------------------------------------------
+    # Recency does not rank same-day crossovers; the tiebreak does. It was
+    # alphabetical by accident, which is arbitrary and favours names starting
+    # with A. Publishing a number that depends on an arbitrary choice without
+    # showing how much it depends on it is the sort of thing this repo exists
+    # to complain about, so the band is measured and reported.
+    print(f"\n{'=' * 78}\nTIEBREAK SENSITIVITY (S3, same universe and costs)"
+          f"\n{'=' * 78}", flush=True)
+    tb_rows = {}
+    for mode in ("alpha", "turnover", "spread", "reverse"):
+        cfg = Settings(costs=CostModel(),
+                       execution=ExecModel(slippage_bps=args.slippage_bps,
+                                           tiebreak=mode),
+                       portfolio=pf, short_window=args.short,
+                       long_window=args.long)
+        rr = run_backtest(store, mem_pit, cfg, label=f"S3_tb_{mode}",
+                          start=trade_from)
+        tb_rows[mode] = {"cagr_pct": cagr(rr.equity) * 100,
+                         "sharpe": sharpe(rr.equity),
+                         "max_dd_pct": max_drawdown(rr.equity) * 100,
+                         "trades": len(rr.trades)}
+        print(f"  {mode:<9s}      CAGR {tb_rows[mode]['cagr_pct']:6.2f}%   "
+              f"Sharpe {tb_rows[mode]['sharpe']:5.2f}   "
+              f"maxDD {tb_rows[mode]['max_dd_pct']:6.1f}%   "
+              f"trades {tb_rows[mode]['trades']}")
+    _lo = min(v["cagr_pct"] for v in tb_rows.values())
+    _hi = max(v["cagr_pct"] for v in tb_rows.values())
+    print(f"\n  band {_lo:.2f}% .. {_hi:.2f}%  (spread {_hi - _lo:.2f} points). "
+          f"The shipped default is 'alpha'.")
+
     # ---- slippage sensitivity: 5 / 25 / 50 bps per side --------------------
     print(f"\n{'=' * 78}\nSLIPPAGE SENSITIVITY (S3, point-in-time, full charges)"
           f"\n{'=' * 78}", flush=True)
@@ -247,6 +277,7 @@ def main() -> None:
         json.dump({"args": vars(args), "bias": {k: v for k, v in bias.items()
                                                 if k != "no_data_at_all"},
                    "summaries": summaries, "slippage_sensitivity": slip_rows,
+            "tiebreak_sensitivity": tb_rows,
                    "nulls": nulls, "benchmark": bench.name}, f, indent=2, default=str)
 
     print(f"\n{'=' * 78}\nHOW MUCH EACH ASSUMPTION WAS WORTH (CAGR, % per year)\n{'=' * 78}")

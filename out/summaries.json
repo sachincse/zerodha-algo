@@ -47,12 +47,12 @@
       "end": "2026-08-21",
       "years": 15.63,
       "initial": 1000000.0,
-      "final": 6461902.945649384,
-      "total_return_pct": 546.1902945649384,
-      "cagr_pct": 12.67957041293184,
-      "vol_pct": 15.065912588076397,
-      "sharpe": 0.45255582805184935,
-      "sortino": 0.6016586276665948,
+      "final": 6459615.15927243,
+      "total_return_pct": 545.961515927243,
+      "cagr_pct": 12.677017697674643,
+      "vol_pct": 15.065943942711325,
+      "sharpe": 0.4524017549578121,
+      "sortino": 0.601468510826799,
       "max_drawdown_pct": -28.07214483807059,
       "longest_dd_days": 665,
       "avg_exposure": 0.9968677193890757,
@@ -75,7 +75,7 @@
       "benchmark_total_return_pct": 389.5240665335425,
       "benchmark_max_dd_pct": -37.95052348168498,
       "benchmark_sharpe": 0.3188763929076892,
-      "alpha_cagr_pct": 1.9839814078364437,
+      "alpha_cagr_pct": 1.9814286925792466,
       "band_blocked_fills": 0
     },
     "S1_realfill": {
@@ -207,18 +207,44 @@
       "max_dd_pct": -54.17030873047558
     }
   },
+  "tiebreak_sensitivity": {
+    "alpha": {
+      "cagr_pct": 1.9170387795854893,
+      "sharpe": -0.20197904042078452,
+      "max_dd_pct": -42.12847367021458,
+      "trades": 1574
+    },
+    "turnover": {
+      "cagr_pct": 0.6575888267035257,
+      "sharpe": -0.2840126453577215,
+      "max_dd_pct": -50.3042452957327,
+      "trades": 1584
+    },
+    "spread": {
+      "cagr_pct": 2.4388790712758235,
+      "sharpe": -0.15890454459715314,
+      "max_dd_pct": -46.6067264131082,
+      "trades": 1529
+    },
+    "reverse": {
+      "cagr_pct": 2.6596127001369485,
+      "sharpe": -0.15214845416451864,
+      "max_dd_pct": -47.50423583869415,
+      "trades": 1567
+    }
+  },
   "nulls": {
     "pit_equal_weight": {
-      "cagr_pct": 11.903483685330984,
-      "sharpe": 0.35468266605993254,
-      "max_dd_pct": -46.7902349247796
+      "cagr_pct": 13.653421768857132,
+      "sharpe": 0.4367219749710749,
+      "max_dd_pct": -44.85010626674145
     },
     "random_timing": {
       "n_draws": 1000,
       "n_trades": 1574,
       "strategy_mean_trade_pct": 0.2843184071440282,
       "null_mean_trade_pct": 0.46070413339408345,
-      "null_p05_pct": -0.01182402323031777,
+      "null_p05_pct": -0.011824023230317744,
       "null_p95_pct": 0.9237019156003652,
       "strategy_percentile": 28.199999999999996,
       "beats_null": false,

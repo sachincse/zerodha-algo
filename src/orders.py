@@ -10,6 +10,16 @@ behaviour do not silently diverge:
   * equal weight across ``max_positions`` slots
   * a slot is only filled by a BULLISH signal that is fresh (``bars_since`` <=
     ``max_bars_since``)
+
+ONE PLACE WHERE THEY CAN DIVERGE, AND HOW TO KEEP THEM HONEST.
+``max_bars_since`` defaulted to 3, which let this sheet act on signals the
+backtest never acted on: the backtest enters ONLY on the crossover bar itself
+(``bars_since == 0``) and uses recency purely to rank competing entries. A
+default of 3 therefore proposed trades that no published number describes.
+The default is 0 now, so the sheet does what was measured. Raising it is
+supported and sometimes sensible -- a signal two days old is not worthless --
+but it is then YOUR rule, not the tested one, and the note in the output says
+so.
   * BEARISH rows are exits for names you already hold; they are never shorts,
     because equity delivery in India cannot be sold short overnight
 """
@@ -49,7 +59,7 @@ def build_order_sheet(
     holdings: dict[str, int] | None = None,
     capital: float = 1_000_000.0,
     max_positions: int = 10,
-    max_bars_since: int = 3,
+    max_bars_since: int = 0,
     exchange: str = "NSE",
 ) -> tuple[list[ProposedOrder], list[str]]:
     """Return (orders, notes).
@@ -64,6 +74,28 @@ def build_order_sheet(
 
     if scan.empty:
         return orders, ["scan produced no signals"]
+
+    # ---- a symbol can legitimately appear on BOTH sides -------------------
+    # The scan reports signals across a lookback window, so one name can carry
+    # a bearish cross from five days ago and a bullish cross from today. Acting
+    # on both produced a SELL and a BUY for the same symbol in the same sheet:
+    # a wash trade that pays charges twice and nets to nothing.
+    #
+    # The fresher signal is the one that describes the stock's current state,
+    # so it wins and the older one is dropped.
+    if not scan.empty and "bars_since" in scan.columns:
+        freshest = (scan.sort_values("bars_since")
+                        .groupby("symbol", as_index=False).first()
+                        .set_index("symbol")["signal"].to_dict())
+        conflicted = [s for s, g in scan.groupby("symbol")
+                      if g["signal"].nunique() > 1]
+        if conflicted:
+            notes.append(
+                f"{len(conflicted)} symbol(s) had both a bullish and a bearish "
+                f"signal in the window; the more recent one was used "
+                f"({', '.join(sorted(conflicted)[:5])})")
+        scan = scan[[freshest.get(s) == sig
+                     for s, sig in zip(scan["symbol"], scan["signal"])]]
 
     # ---- exits first: they free both cash and slots ----------------------
     bearish = scan[scan["signal"] == "BEARISH"]
@@ -98,7 +130,12 @@ def build_order_sheet(
                        & (scan["bars_since"] > max_bars_since)).sum())
     if stale_bulls:
         notes.append(f"{stale_bulls} bullish signals skipped -- older than "
-                     f"{max_bars_since} bars; the backtest ranks on recency")
+                     f"{max_bars_since} bars")
+    if max_bars_since > 0:
+        notes.append(f"max_bars_since={max_bars_since}: this sheet may enter on "
+                     f"signals up to {max_bars_since} bars old. The backtest "
+                     f"entered ONLY on the crossover bar, so the published "
+                     f"figures do not describe those trades.")
 
     budget = capital / max_positions
     for _, r in fresh.head(free_slots).iterrows():

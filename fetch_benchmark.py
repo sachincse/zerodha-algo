@@ -61,8 +61,31 @@ def fetch_tri(start="01-Jan-2003", end="21-Aug-2026", index_name="NIFTY 100") ->
 
 
 if __name__ == "__main__":
+    import argparse
+
+    # The end date was hard-coded, so the benchmark could not be pinned to the
+    # same window as the backtest. run_backtest.py takes --end and this did
+    # not, which made "reproduce the published numbers" impossible the moment
+    # the index advanced past the baked-in date.
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--start", default="01-Jan-2003")
+    ap.add_argument("--end", default="22-Aug-2026",
+                    help="dd-Mon-YYYY or an ISO date; match the --end you pass "
+                         "to run_backtest.py")
+    ap.add_argument("--index", default="NIFTY 100")
+    args = ap.parse_args()
+
+    def _as_niftyindices(d: str) -> str:
+        """Accept 2026-08-22 as well as 22-Aug-2026 — the runners use ISO."""
+        try:
+            return pd.Timestamp(d).strftime("%d-%b-%Y")
+        except (ValueError, TypeError):
+            return d
+
     try:
-        tri = fetch_tri()
+        tri = fetch_tri(start=_as_niftyindices(args.start),
+                        end=_as_niftyindices(args.end),
+                        index_name=args.index)
         tri.to_csv(OUT)
         print(f"{len(tri)} rows  {tri.index.min().date()} -> {tri.index.max().date()}")
         print(f"last value {tri.iloc[-1]:,.2f}")

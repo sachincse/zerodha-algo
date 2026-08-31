@@ -93,7 +93,7 @@ The repo measures each one rather than asserting it:
 | S1 | fills moved to the next session's open | 12.47% |
 | S2 | + Zerodha charges, STT, stamp duty, GST, DP, 25bps slippage | 5.85% |
 | S3 | + point-in-time universe instead of today's index members | **1.92%** |
-| | same universe, no timing rule at all | 11.90% |
+| | same universe, no timing rule at all | **13.65%** |
 | | Nifty 100 TRI, net of a 25bps index-fund fee | **10.70%** |
 
 Costs took 6.6 points a year. Survivorship bias took another 3.9. Fill
@@ -102,8 +102,12 @@ because it is the leak everyone talks about and the smallest one here.
 
 Two further nulls, both of which the rule fails:
 
-- **Same universe, no timing at all** returns 11.90%. The stock pool was fine;
-  adding the crossover destroyed ten points a year.
+- **Same universe, no timing at all** returns 13.65%. The stock pool was fine;
+  adding the crossover destroyed **11.74 points a year**. (This null used to be
+  quoted at 11.90% because it was measured on price return alone while the
+  strategy collected dividends and the benchmark was a total-return index. It
+  was the only one of the three measured differently, and the error flattered
+  the strategy by understating what it was losing to. Fixed in src/nulls.py.)
 - **Random entries** with the same trade count and holding-period distribution
   average +0.461% per trade against the strategy's +0.284%. It sits at the 28th
   percentile of that null. Holding the entry *dates* fixed and randomising only
@@ -113,6 +117,31 @@ Two further nulls, both of which the rule fails:
 Across the 41-pair parameter grid, `corr(CAGR, log trade count) = -0.86`. The
 surface measures how little each pair traded, not how well it predicted. The
 video's 6/30 ranks 33rd of 41.
+
+### One more number that depends on an arbitrary choice
+
+Signals are ranked by crossover recency, as in the video. But recency does not
+actually rank them: on most days every fresh crossover ties at `bars_since == 0`,
+and what decides who gets the free slots is the **tiebreak** — which was a bare
+`cands.sort()`, i.e. alphabetical by symbol. Arbitrary, undocumented, and
+quietly kind to names beginning with A.
+
+Publishing a figure that turns on a coin-flip without saying how much it turns
+on it is exactly what this repo exists to complain about, so it is measured
+(`run_backtest.py` prints it; `out/summaries.json` stores it):
+
+| tiebreak | CAGR | Sharpe | trades |
+|---|---|---|---|
+| turnover (most liquid first) | 0.66% | -0.284 | 1,584 |
+| **alpha (shipped default)** | **1.92%** | **-0.202** | **1,574** |
+| spread (widest cross first) | 2.44% | -0.159 | 1,529 |
+| reverse alphabetical | 2.66% | -0.152 | 1,567 |
+
+**A two-point band on a 1.92% headline.** The shipped default sits inside it,
+not at either end. Every one of the four loses to the index's 10.70% and to
+13.65% for holding the same stocks, so the conclusion is not sensitive to the
+choice — but the headline figure is, and quoting it to two decimals without
+this table would overstate how precise it is.
 
 ## How the no-leak claim is enforced
 
@@ -193,9 +222,11 @@ grows every day and stops matching the published figures — `out/summaries.json
 records the exact arguments behind them.
 
 Expect small differences anyway. Prices come from Yahoo rather than NSE
-bhavcopy, and re-pulling the same window moves the 15-year CAGR by a few tenths
-of a point. The conclusion here is an 8.8-point gap, which is many times larger
-than that noise, but do not expect the fourth digit to match.
+bhavcopy, and Yahoo revises history, so re-pulling the same window will move
+these figures. By how much has not been measured — an earlier draft quoted "a
+few tenths of a point" and that number traced to nothing on disk, so it is gone.
+The conclusion here is an 8.8-point gap, which is far larger than any plausible
+revision, but do not expect the fourth digit to match.
 
 ## Licence
 

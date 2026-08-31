@@ -16,14 +16,14 @@ The same rule, run four times, removing one convenient assumption at a time. Thi
 | S1 | fills moved to the next session's open | 12.47% | 0.44 | -26.86% |
 | S2 | + Zerodha charges, STT, stamp, GST, DP, 25bps slippage | 5.85% | 0.03 | -32.34% |
 | S3 | + point-in-time universe instead of today's index | 1.92% | -0.20 | -42.13% |
-| - | **same universe, no timing at all** | **11.90%** | 0.35 | -46.79% |
+| - | **same universe, no timing at all** | **13.65%** | 0.44 | -44.85% |
 | - | **NIFTY100_TRI_net** | **10.70%** | 0.32 | -37.95% |
 
-Costs took **6.62 points a year**. Survivorship bias took another **3.94**. Fill timing - the leak everyone warns about - moved it by **0.21**, which on a signal this slow is close to nothing. The famous leak is the smallest one here; the two that actually matter are the two nobody mentions.
+Costs took **6.62 points a year**. Survivorship bias took another **3.94**. Fill timing - the leak everyone warns about - moved it by **0.20**, which on a signal this slow is close to nothing. The famous leak is the smallest one here; the two that actually matter are the two nobody mentions.
 
 ## The universe was fine. The rule was the problem.
 
-Equal-weighting the *same* point-in-time universe with no timing whatsoever, paying the same charges, returned **11.90% CAGR** - comfortably ahead of the index. So the stock selection was not the issue. Adding the crossover rule on top took it from 11.90% down to 1.92%. **The timing rule destroyed 9.99 points a year.**
+Equal-weighting the *same* point-in-time universe with no timing whatsoever, paying the same charges, returned **13.65% CAGR** - comfortably ahead of the index. So the stock selection was not the issue. Adding the crossover rule on top took it from 13.65% down to 1.92%. **The timing rule destroyed 11.74 points a year.**
 
 ## It does not beat random entries
 
